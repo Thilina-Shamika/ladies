@@ -1,0 +1,238 @@
+import { WordPressPost, WordPressPage } from './utils';
+
+const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || '';
+
+interface MenuLink {
+  title: string;
+  url: string;
+  target: string;
+}
+
+interface TopBarMenuItem {
+  acf_fc_layout: 'top_menu_items';
+  item_name: string;
+  item_link: MenuLink;
+}
+
+interface SocialMediaItem {
+  acf_fc_layout: 'social_items';
+  social_media_name: string;
+  social_media_url: string;
+  icons: boolean;
+}
+
+interface MainMenuItem {
+  acf_fc_layout: 'main_menu';
+  main_menu_item_name: string;
+  main_menu_item_link: MenuLink;
+}
+
+interface WordPressImage {
+  ID: number;
+  id: number;
+  title: string;
+  filename: string;
+  filesize: number;
+  url: string;
+  link: string;
+  alt: string;
+  author: string;
+  description: string;
+  caption: string;
+  name: string;
+  status: string;
+  uploaded_to: number;
+  date: string;
+  modified: string;
+  menu_order: number;
+  mime_type: string;
+  type: string;
+  subtype: string;
+  icon: string;
+  width: number;
+  height: number;
+  sizes: {
+    thumbnail: string;
+    'thumbnail-width': number;
+    'thumbnail-height': number;
+    medium: string;
+    'medium-width': number;
+    'medium-height': number;
+    medium_large: string;
+    'medium_large-width': number;
+    'medium_large-height': number;
+    large: string;
+    'large-width': number;
+    'large-height': number;
+    '1536x1536': string;
+    '1536x1536-width': number;
+    '1536x1536-height': number;
+    '2048x2048': string;
+    '2048x2048-width': number;
+    '2048x2048-height': number;
+  };
+}
+
+export type WordPressHeader = {
+  id: number;
+  acf: {
+    top_bar_phone: string;
+    top_bar_email: string;
+    top_bar_menu: TopBarMenuItem[];
+    social_media_icons: SocialMediaItem[];
+    main_logo: WordPressImage;
+    main_menu_items: MainMenuItem[];
+  };
+};
+
+export async function getHeader(): Promise<WordPressHeader | null> {
+  try {
+    const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/top-bar-header?_embed&acf=true`;
+    console.log('Fetching header from:', apiUrl);
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      cache: 'no-store',
+      next: { revalidate: 0 },
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Header API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: apiUrl,
+        errorText
+      });
+      throw new Error(`Failed to fetch header: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    
+    const headers = await response.json();
+    console.log('Header API Response:', headers);
+    
+    if (!headers || !Array.isArray(headers) || headers.length === 0) {
+      console.warn('No header data found in response');
+      return null;
+    }
+
+    return headers[0];
+  } catch (error) {
+    console.error('Error fetching header:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    return null;
+  }
+}
+
+export async function getNonce(): Promise<string> {
+  try {
+    const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/users/me`, {
+      credentials: 'include',
+    });
+    
+    if (response.ok) {
+      const nonce = response.headers.get('X-WP-Nonce');
+      return nonce || '';
+    }
+    return '';
+  } catch (error) {
+    console.error('Error getting nonce:', error);
+    return '';
+  }
+}
+
+export async function getPosts(page = 1, perPage = 10): Promise<WordPressPost[]> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&page=${page}&per_page=${perPage}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+}
+
+export async function getPost(slug: string): Promise<WordPressPost | null> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&slug=${slug}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch post');
+    }
+    
+    const posts = await response.json();
+    return posts[0] || null;
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    return null;
+  }
+}
+
+export async function getPages(): Promise<WordPressPage[]> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?_embed`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch pages');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching pages:', error);
+    return [];
+  }
+}
+
+export async function getPage(slug: string): Promise<WordPressPage | null> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?_embed&slug=${slug}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch page');
+    }
+    
+    const pages = await response.json();
+    return pages[0] || null;
+  } catch (error) {
+    console.error('Error fetching page:', error);
+    return null;
+  }
+} 
