@@ -24,7 +24,7 @@ export type WordPressPost = {
       alt_text: string;
     }>;
   };
-  acf?: Record<string, any>;
+  acf?: Record<string, unknown>;
 };
 
 export type WordPressPage = {
@@ -37,5 +37,5 @@ export type WordPressPage = {
   content: {
     rendered: string;
   };
-  acf?: Record<string, any>;
+  acf?: Record<string, unknown>;
 }; 

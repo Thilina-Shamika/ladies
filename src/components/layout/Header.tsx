@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
 import { WordPressHeader } from '@/lib/wordpress';
 
 interface HeaderProps {
@@ -108,7 +107,7 @@ export function Header({ headerData }: HeaderProps) {
             >
               <Link href="/" className="block">
                 {headerData?.acf.main_logo && (
-                  <img
+                  <Image
                     src={headerData.acf.main_logo.url}
                     alt={headerData.acf.main_logo.alt || 'Logo'}
                     width={headerData.acf.main_logo.width}

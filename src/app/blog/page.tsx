@@ -9,9 +9,10 @@ export const metadata = {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const currentPage = Number(searchParams.page) || 1;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const currentPage = Number(resolvedSearchParams.page) || 1;
   const posts = await getPosts(currentPage, 9);
 
   return <BlogListClient posts={posts} currentPage={currentPage} />;

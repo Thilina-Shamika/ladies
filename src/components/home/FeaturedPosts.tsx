@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { WordPressPost } from '@/lib/utils';
 
@@ -23,10 +24,12 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
           >
             {post._embedded?.['wp:featuredmedia']?.[0] && (
               <div className="aspect-video relative">
-                <img
+                <Image
                   src={post._embedded['wp:featuredmedia'][0].source_url}
                   alt={post._embedded['wp:featuredmedia'][0].alt_text}
-                  className="object-cover w-full h-full"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
             )}

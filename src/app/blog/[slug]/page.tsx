@@ -2,11 +2,8 @@ import { getPost } from '@/lib/wordpress';
 import { notFound } from 'next/navigation';
 import { BlogPostClient } from '@/components/home/BlogPostClient';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function generateMetadata({ params }: { params: any }) {
   const post = await getPost(params.slug);
   
   if (!post) {
@@ -26,11 +23,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPost({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function BlogPost({ params }: { params: any }) {
   const post = await getPost(params.slug);
 
   if (!post) {

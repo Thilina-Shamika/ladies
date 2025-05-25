@@ -1,9 +1,11 @@
 'use client';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { WordPressPost } from '@/lib/utils';
 
 interface BlogPostClientProps {
-  post: any;
-  featuredImage?: any;
+  post: WordPressPost;
+  featuredImage?: { source_url: string; alt_text: string };
 }
 
 export function BlogPostClient({ post, featuredImage }: BlogPostClientProps) {
@@ -16,10 +18,12 @@ export function BlogPostClient({ post, featuredImage }: BlogPostClientProps) {
       >
         {featuredImage && (
           <div className="aspect-video relative mb-8 rounded-lg overflow-hidden">
-            <img
+            <Image
               src={featuredImage.source_url}
               alt={featuredImage.alt_text}
-              className="object-cover w-full h-full"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}

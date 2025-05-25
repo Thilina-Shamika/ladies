@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface PrincipalMessageProps {
   image: { url: string; alt: string; };
@@ -27,10 +28,12 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left: Principal Image with overlay */}
           <div className="relative w-full h-72 md:h-full md:min-h-[350px] rounded-xl overflow-hidden shadow-xl">
-            <img
+            <Image
               src={image.url}
               alt={image.alt || name}
-              className="w-full h-full object-cover object-center"
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
             <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent px-6 py-4">
               <div className="text-lg md:text-2xl font-bold text-white mb-1">{name}</div>
