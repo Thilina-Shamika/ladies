@@ -235,4 +235,96 @@ export async function getPage(slug: string): Promise<WordPressPage | null> {
     console.error('Error fetching page:', error);
     return null;
   }
+}
+
+export interface Slide {
+  acf_fc_layout: string;
+  slide_subheading: string;
+  slide_heading: string;
+  short_description?: string;
+  slide_button_text?: string;
+  slide_button_link?: {
+    title: string;
+    url: string;
+    target?: string;
+  };
+  slide: {
+    url: string;
+    alt: string;
+    width: number;
+    height: number;
+  };
+}
+
+export interface PrincipalImage {
+  url: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+export interface PrincipalButtonLink {
+  title: string;
+  url: string;
+  target?: string;
+}
+
+export interface HomePage {
+  id: number;
+  acf: {
+    home_slider: Slide[];
+    principal: PrincipalImage;
+    principals_name: string;
+    designation_or_qualifications: string;
+    principals_message_subheading: string;
+    principals_message_heading: string;
+    principals_message: string;
+    principals_section_button_text?: string;
+    principals_section_button_link?: PrincipalButtonLink;
+  };
+}
+
+export async function getHomePage(): Promise<HomePage | null> {
+  try {
+    const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=home&acf_format=standard`;
+    console.log('Fetching home page from:', apiUrl);
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      cache: 'no-store',
+      next: { revalidate: 0 },
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Home Page API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: apiUrl,
+        errorText
+      });
+      throw new Error(`Failed to fetch home page: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Home Page API Response:', data);
+    
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.warn('No home page data found in response');
+      return null;
+    }
+
+    return data[0];
+  } catch (error) {
+    console.error('Error fetching home page:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    return null;
+  }
 } 

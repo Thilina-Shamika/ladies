@@ -36,7 +36,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header headerData={headerData} />
-        <main className="min-h-screen pt-32 pb-16">
+        <main>
           {children}
         </main>
         <Footer />
