@@ -88,7 +88,6 @@ export type WordPressHeader = {
 export async function getHeader(): Promise<WordPressHeader | null> {
   try {
     const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/top-bar-header?_embed&acf=true`;
-    console.log('Fetching header from:', apiUrl);
 
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -112,7 +111,6 @@ export async function getHeader(): Promise<WordPressHeader | null> {
     }
     
     const headers = await response.json();
-    console.log('Header API Response:', headers);
     
     if (!headers || !Array.isArray(headers) || headers.length === 0) {
       console.warn('No header data found in response');
@@ -287,7 +285,6 @@ export interface HomePage {
 export async function getHomePage(): Promise<HomePage | null> {
   try {
     const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=home&acf_format=standard`;
-    console.log('Fetching home page from:', apiUrl);
 
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -311,7 +308,6 @@ export async function getHomePage(): Promise<HomePage | null> {
     }
     
     const data = await response.json();
-    console.log('Home Page API Response:', data);
     
     if (!data || !Array.isArray(data) || data.length === 0) {
       console.warn('No home page data found in response');

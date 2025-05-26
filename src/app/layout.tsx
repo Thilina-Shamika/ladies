@@ -28,7 +28,6 @@ export default async function RootLayout({
   if (!wpApiUrl) {
     console.error('WordPress API URL is not configured. Please set NEXT_PUBLIC_WORDPRESS_API_URL in .env.local');
   } else {
-    console.log('WordPress API URL:', wpApiUrl);
     try {
       headerData = await getHeader();
     } catch (error) {
