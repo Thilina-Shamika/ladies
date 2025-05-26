@@ -46,9 +46,9 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
               {/* Optional: Add an icon here if desired */}
               <span className="text-xs uppercase tracking-widest text-[#9d0202] font-semibold">{subheading}</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">{heading}</h2>
+            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-6 leading-tight">{heading}</h2>
             <div
-              className="prose prose-lg max-w-none text-gray-700 mb-8"
+              className="prose prose-lg text-sm max-w-none text-gray-700 mb-8"
               dangerouslySetInnerHTML={{ __html: message }}
             />
             {buttonText && buttonLink?.url && (

@@ -80,7 +80,7 @@ export function HomeSlider({ slides }: HomeSliderProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.8 }}
-                  className="text-5xl md:text-7xl font-bold text-white mb-6 break-words md:max-w-[90%]"
+                  className="text-5xl md:text-7xl font-regular text-white mb-6 break-words md:max-w-[90%]"
                 >
                   {slides[currentSlide].slide_heading}
                 </motion.div>
