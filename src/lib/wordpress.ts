@@ -288,6 +288,12 @@ export interface HomePage {
     about_image?: WordPressImage;
     about_image2?: WordPressImage;
     about_background_image?: WordPressImage;
+    tile_items?: {
+      acf_fc_layout: string;
+      tile_image: WordPressImage;
+      tile_heading: string;
+      tile_link: { title: string; url: string; target?: string };
+    }[];
   };
 }
 

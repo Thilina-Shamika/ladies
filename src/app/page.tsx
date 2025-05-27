@@ -3,6 +3,7 @@ import { HomeSlider } from '@/components/home/HomeSlider';
 import { PrincipalMessage } from '@/components/home/PrincipalMessage';
 import NewsEvents from '@/components/home/NewsEvents';
 import AboutUs from '@/components/home/AboutUs';
+import Tiles from '@/components/home/Tiles';
 
 export default async function Home() {
   const homePage = await getHomePage();
@@ -38,6 +39,7 @@ export default async function Home() {
         image2Alt={homePage?.acf.about_image2?.alt}
         backgroundImageUrl={homePage?.acf.about_background_image?.url}
       />
+      {homePage?.acf.tile_items && <Tiles items={homePage.acf.tile_items} />}
     </main>
   );
 }
