@@ -27,7 +27,7 @@ export function HomeSlider({ slides }: HomeSliderProps) {
   };
 
   return (
-    <div className="relative w-full h-[80vh] overflow-hidden">
+    <div className="relative w-full h-[80vh] overflow-hidden bg-white dark:bg-[#0a0a0a]">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}

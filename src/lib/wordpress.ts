@@ -280,6 +280,14 @@ export interface HomePage {
     principals_section_button_text?: string;
     principals_section_button_link?: PrincipalButtonLink;
     "125_years": WordPressImage;
+    about_us_subhaeding?: string;
+    about_heading?: string;
+    about_description?: string;
+    about_button_text?: string;
+    about_button_link?: { title: string; url: string; target?: string };
+    about_image?: WordPressImage;
+    about_image2?: WordPressImage;
+    about_background_image?: WordPressImage;
   };
 }
 
@@ -324,4 +332,12 @@ export async function getHomePage(): Promise<HomePage | null> {
     });
     return null;
   }
+}
+
+export async function getCategoriesByIds(ids: number[]): Promise<{ id: number; name: string; slug: string }[]> {
+  if (!ids.length) return [];
+  const params = ids.map(id => `include[]=${id}`).join('&');
+  const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}`);
+  if (!response.ok) return [];
+  return response.json();
 } 

@@ -25,6 +25,8 @@ export type WordPressPost = {
     }>;
   };
   acf?: Record<string, unknown>;
+  categories?: number[];
+  link?: string;
 };
 
 export type WordPressPage = {
