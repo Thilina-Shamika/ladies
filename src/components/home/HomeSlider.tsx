@@ -46,7 +46,7 @@ export function HomeSlider({ slides }: HomeSliderProps) {
             animate="animate"
             exit="exit"
           />
-          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#9d0202] to-transparent" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#000000] to-transparent" />
 
           {/* Grid Overlay */}
           <div className="absolute inset-0 pointer-events-none z-10">

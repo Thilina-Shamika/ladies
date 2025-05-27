@@ -20,6 +20,7 @@ export default async function Home() {
           message={homePage.acf.principals_message}
           buttonText={homePage.acf.principals_section_button_text}
           buttonLink={homePage.acf.principals_section_button_link}
+          anniversaryImage={homePage.acf["125_years"]}
         />
       )}
     </main>

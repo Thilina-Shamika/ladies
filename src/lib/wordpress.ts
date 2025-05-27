@@ -279,6 +279,7 @@ export interface HomePage {
     principals_message: string;
     principals_section_button_text?: string;
     principals_section_button_link?: PrincipalButtonLink;
+    "125_years": WordPressImage;
   };
 }
 
