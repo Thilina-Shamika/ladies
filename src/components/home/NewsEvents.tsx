@@ -42,6 +42,8 @@ export default function NewsEvents() {
   }
 
   function NewsEventCard({ post, idx }: { post: WordPressPost; idx: number }) {
+    // Always use /blog/${post.slug} for blog post links
+    const nextHref = `/blog/${post.slug}`;
     return (
       <article
         key={post.id}
@@ -61,7 +63,7 @@ export default function NewsEvents() {
           ))}
         </div>
         <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-3xl font-bold text-gray-900 leading-none">
+          <span className="text-xl font-bold text-gray-900 leading-none">
             {new Date(post.date).toLocaleDateString(undefined, { day: "2-digit" })}
           </span>
           <span className="text-sm text-gray-500 font-medium uppercase">
@@ -72,7 +74,7 @@ export default function NewsEvents() {
           </span>
         </div>
         <h3 className="text-lg text-black mb-2 leading-snug">
-          <Link href={post.link || '#'} className="hover:text-[#9d0202] transition-colors" target="_blank">
+          <Link href={nextHref} className="hover:text-[#9d0202] transition-colors">
             {post.title.rendered}
           </Link>
         </h3>

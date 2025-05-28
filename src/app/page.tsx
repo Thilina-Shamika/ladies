@@ -4,6 +4,8 @@ import { PrincipalMessage } from '@/components/home/PrincipalMessage';
 import NewsEvents from '@/components/home/NewsEvents';
 import AboutUs from '@/components/home/AboutUs';
 import Tiles from '@/components/home/Tiles';
+import Schooling from '@/components/home/Schooling';
+import News from '@/components/home/News';
 
 export default async function Home() {
   const homePage = await getHomePage();
@@ -40,6 +42,21 @@ export default async function Home() {
         backgroundImageUrl={homePage?.acf.about_background_image?.url}
       />
       {homePage?.acf.tile_items && <Tiles items={homePage.acf.tile_items} />}
+      {homePage?.acf.curriculum && (
+        <Schooling
+          schooling_sub_heading={homePage.acf.schooling_sub_heading ?? ''}
+          schooling_heading={homePage.acf.schooling_heading ?? ''}
+          curriculum={
+            (homePage.acf.curriculum || []).map((item: any) => ({
+              ...item,
+              curriculum_link: typeof item.curriculum_link === 'string'
+                ? { title: '', url: item.curriculum_link }
+                : item.curriculum_link
+            }))
+          }
+        />
+      )}
+      <News />
     </main>
   );
 }

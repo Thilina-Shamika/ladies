@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from 'framer-motion';
+import Link from "next/link";
 
 interface AboutUsProps {
   subheading?: string;
@@ -75,7 +76,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
             <span className="text-xs uppercase tracking-widest text-[#9d0202] font-semibold mb-2">
               {subheading}
             </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-3xl md:text-6xl text-gray-900 mb-6 leading-tight">
               {heading}
             </h2>
             <div
@@ -83,12 +84,27 @@ const AboutUs: React.FC<AboutUsProps> = ({
               dangerouslySetInnerHTML={{ __html: description || '' }}
             />
             {buttonText && buttonLink && (
-              <a
-                href={buttonLink}
-                className="inline-block bg-[#9d0202] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-white hover:text-[#9d0202] border-2 border-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide"
-              >
-                {buttonText}
-              </a>
+              (() => {
+                let nextHref = buttonLink.replace(/^https?:\/\/[^/]+/, '');
+                if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                  return (
+                    <a
+                      href={nextHref}
+                      className="inline-block bg-[#9d0202] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-white hover:text-[#9d0202] border-2 border-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide"
+                    >
+                      {buttonText}
+                    </a>
+                  );
+                }
+                return (
+                  <Link
+                    href={nextHref}
+                    className="inline-block bg-[#9d0202] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-white hover:text-[#9d0202] border-2 border-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide"
+                  >
+                    {buttonText}
+                  </Link>
+                );
+              })()
             )}
           </div>
           {/* Right: Images */}

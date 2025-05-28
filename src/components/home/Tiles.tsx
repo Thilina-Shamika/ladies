@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface TileItem {
   tile_image: { url: string; alt: string };
@@ -27,29 +28,56 @@ const Tiles: React.FC<TilesProps> = ({ items }) => {
       <div
         className={`grid ${gridCols} gap-0 bg-[#9d0202] rounded-lg overflow-hidden border border-white`}
       >
-        {items.map((item, idx) => (
-          <a
-            key={idx}
-            href={item.tile_link.url}
-            target={item.tile_link.target || undefined}
-            rel={item.tile_link.target === '_blank' ? 'noopener noreferrer' : undefined}
-            className="flex flex-col items-center justify-center px-4 py-8 border-white border-b border-r last:border-r-0 md:last:border-b-0 md:border-b-0 md:border-r"
-            style={{ minHeight: 180 }}
-          >
-            <div className="mb-4">
-              <Image
-                src={item.tile_image.url}
-                alt={item.tile_image.alt || item.tile_heading}
-                width={60}
-                height={60}
-                className="object-contain"
-              />
-            </div>
-            <div className="text-white text-center text-base font-semibold leading-tight">
-              {item.tile_heading}
-            </div>
-          </a>
-        ))}
+        {items.map((item, idx) => {
+          // Convert WordPress absolute URLs to relative paths for Next.js Link
+          let nextHref = item.tile_link.url.replace(/^https?:\/\/[^/]+/, '');
+          if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+            return (
+              <a
+                key={idx}
+                href={nextHref}
+                target={item.tile_link.target || undefined}
+                rel={item.tile_link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                className="flex flex-col items-center justify-center px-4 py-8 border-white border-b border-r last:border-r-0 md:last:border-b-0 md:border-b-0 md:border-r"
+                style={{ minHeight: 180 }}
+              >
+                <div className="mb-4">
+                  <Image
+                    src={item.tile_image.url}
+                    alt={item.tile_image.alt || item.tile_heading}
+                    width={60}
+                    height={60}
+                    className="object-contain"
+                  />
+                </div>
+                <div className="text-white text-center text-base font-semibold leading-tight">
+                  {item.tile_heading}
+                </div>
+              </a>
+            );
+          }
+          return (
+            <Link
+              key={idx}
+              href={nextHref}
+              className="flex flex-col items-center justify-center px-4 py-8 border-white border-b border-r last:border-r-0 md:last:border-b-0 md:border-b-0 md:border-r"
+              style={{ minHeight: 180 }}
+            >
+              <div className="mb-4">
+                <Image
+                  src={item.tile_image.url}
+                  alt={item.tile_image.alt || item.tile_heading}
+                  width={60}
+                  height={60}
+                  className="object-contain"
+                />
+              </div>
+              <div className="text-white text-center text-base font-semibold leading-tight">
+                {item.tile_heading}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

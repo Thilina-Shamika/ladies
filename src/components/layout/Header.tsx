@@ -53,15 +53,31 @@ export function Header({ headerData }: HeaderProps) {
             <div className="flex items-center space-x-6">
               {/* Top Bar Menu */}
               <div className="hidden md:flex items-center space-x-4">
-                {headerData?.acf.top_bar_menu.map((item, index) => (
-                  <Link
-                    key={index}
-                    href={item.item_link.url}
-                    className="text-[12px] hover:text-white/80 transition-colors"
-                  >
-                    {item.item_name}
-                  </Link>
-                ))}
+                {headerData?.acf.top_bar_menu.map((item, index) => {
+                  // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
+                  let nextHref = item.item_link.url.replace(/^https?:\/\/[^/]+/, '');
+                  if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                    return (
+                      <a
+                        key={index}
+                        href={nextHref}
+                        className="text-[12px] hover:text-white/80 transition-colors"
+                      >
+                        {item.item_name}
+                      </a>
+                    );
+                  }
+                  return (
+                    <Link
+                      key={index}
+                      href={nextHref}
+                      className="text-[12px] hover:text-white/80 transition-colors"
+                      prefetch={false}
+                    >
+                      {item.item_name}
+                    </Link>
+                  );
+                })}
               </div>
 
               {/* Social Media Links */}
@@ -125,15 +141,31 @@ export function Header({ headerData }: HeaderProps) {
               transition={{ delay: 1, duration: 0.8 }}
               className="hidden md:flex items-center space-x-8"
             >
-              {headerData?.acf.main_menu_items.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.main_menu_item_link.url}
-                  className="text-[#000000] text-sm uppercase hover:text-primary transition-colors"
-                >
-                  {item.main_menu_item_name}
-                </Link>
-              ))}
+              {headerData?.acf.main_menu_items.map((item, index) => {
+                // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
+                let nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
+                if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                  return (
+                    <a
+                      key={index}
+                      href={nextHref}
+                      className="text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                    >
+                      {item.main_menu_item_name}
+                    </a>
+                  );
+                }
+                return (
+                  <Link
+                    key={index}
+                    href={nextHref}
+                    className="text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                    prefetch={false}
+                  >
+                    {item.main_menu_item_name}
+                  </Link>
+                );
+              })}
             </motion.nav>
 
             {/* Mobile Menu Button */}
@@ -182,16 +214,33 @@ export function Header({ headerData }: HeaderProps) {
                 </div>
 
                 <nav className="mt-8 space-y-4">
-                  {headerData?.acf.main_menu_items.map((item, index) => (
-                    <Link
-                      key={index}
-                      href={item.main_menu_item_link.url}
-                      className="block py-2 text-[#000000] text-sm uppercase hover:text-primary transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item.main_menu_item_name}
-                    </Link>
-                  ))}
+                  {headerData?.acf.main_menu_items.map((item, index) => {
+                    // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
+                    let nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
+                    if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                      return (
+                        <a
+                          key={index}
+                          href={nextHref}
+                          className="block py-2 text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {item.main_menu_item_name}
+                        </a>
+                      );
+                    }
+                    return (
+                      <Link
+                        key={index}
+                        href={nextHref}
+                        className="block py-2 text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                        prefetch={false}
+                      >
+                        {item.main_menu_item_name}
+                      </Link>
+                    );
+                  })}
                 </nav>
               </div>
             </motion.div>

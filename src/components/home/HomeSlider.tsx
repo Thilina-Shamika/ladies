@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Slide } from '@/lib/wordpress';
+import Link from "next/link";
 
 interface HomeSliderProps {
   slides: Slide[];
@@ -95,17 +96,32 @@ export function HomeSlider({ slides }: HomeSliderProps) {
                   </motion.p>
                 )}
                 {slides[currentSlide].slide_button_text && slides[currentSlide].slide_button_link?.url && (
-                  <motion.a
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.2, duration: 0.8 }}
-                    href={slides[currentSlide].slide_button_link.url}
-                    target={slides[currentSlide].slide_button_link.target || undefined}
-                    rel={slides[currentSlide].slide_button_link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                    className="inline-block bg-white text-[#9d0202] font-semibold px-6 py-3 rounded shadow hover:bg-[#9d0202] hover:text-white transition-colors duration-300 text-base uppercase tracking-wide"
-                  >
-                    {slides[currentSlide].slide_button_text}
-                  </motion.a>
+                  (() => {
+                    let nextHref = slides[currentSlide].slide_button_link.url.replace(/^https?:\/\/[^/]+/, '');
+                    if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                      return (
+                        <motion.a
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1.2, duration: 0.8 }}
+                          href={nextHref}
+                          target={slides[currentSlide].slide_button_link.target || undefined}
+                          rel={slides[currentSlide].slide_button_link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                          className="inline-block bg-white text-[#9d0202] font-semibold px-6 py-3 rounded shadow hover:bg-[#9d0202] hover:text-white transition-colors duration-300 text-base uppercase tracking-wide"
+                        >
+                          {slides[currentSlide].slide_button_text}
+                        </motion.a>
+                      );
+                    }
+                    return (
+                      <Link
+                        href={nextHref}
+                        className="inline-block bg-white text-[#9d0202] font-semibold px-6 py-3 rounded shadow hover:bg-[#9d0202] hover:text-white transition-colors duration-300 text-base uppercase tracking-wide"
+                      >
+                        {slides[currentSlide].slide_button_text}
+                      </Link>
+                    );
+                  })()
                 )}
               </div>
             </div>

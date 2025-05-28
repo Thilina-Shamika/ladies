@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import Link from "next/link";
 
 interface PrincipalMessageProps {
   image: { url: string; alt: string; };
@@ -101,7 +102,7 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
               <span className="text-xs uppercase tracking-widest text-[#9d0202] font-semibold">{subheading}</span>
             </motion.div>
             <motion.h2 
-              className="text-3xl md:text-4xl font-semibold text-gray-900 mb-6 leading-tight"
+              className="text-3xl md:text-6xl text-gray-900 mb-6 leading-14"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -118,18 +119,33 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
               transition={{ duration: 0.6, delay: 0.4 }}
             />
             {buttonText && buttonLink?.url && (
-              <motion.a
-                href={buttonLink.url}
-                target={buttonLink.target || undefined}
-                rel={buttonLink.target === '_blank' ? 'noopener noreferrer' : undefined}
-                className="inline-block bg-[#9d0202] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-white hover:text-[#9d0202] border-2 border-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide mt-2"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                {buttonText}
-              </motion.a>
+              (() => {
+                let nextHref = buttonLink.url.replace(/^https?:\/\/[^/]+/, '');
+                if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                  return (
+                    <motion.a
+                      href={nextHref}
+                      target={buttonLink.target || undefined}
+                      rel={buttonLink.target === '_blank' ? 'noopener noreferrer' : undefined}
+                      className="inline-block bg-[#9d0202] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-white hover:text-[#9d0202] border-2 border-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide mt-2"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: 0.5 }}
+                    >
+                      {buttonText}
+                    </motion.a>
+                  );
+                }
+                return (
+                  <Link
+                    href={nextHref}
+                    className="inline-block bg-[#9d0202] text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-white hover:text-[#9d0202] border-2 border-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide mt-2"
+                  >
+                    {buttonText}
+                  </Link>
+                );
+              })()
             )}
           </motion.div>
         </div>

@@ -294,6 +294,14 @@ export interface HomePage {
       tile_heading: string;
       tile_link: { title: string; url: string; target?: string };
     }[];
+    schooling_sub_heading?: string;
+    schooling_heading?: string;
+    curriculum?: {
+      acf_fc_layout: string;
+      curriculum_image: WordPressImage;
+      curriculum_heading: string;
+      curriculum_link: string;
+    }[];
   };
 }
 
