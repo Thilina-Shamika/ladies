@@ -116,7 +116,7 @@ export function HomeSlider({ slides }: HomeSliderProps) {
                     return (
                       <Link
                         href={nextHref}
-                        className="inline-block bg-white text-[#9d0202] font-semibold px-6 py-3 rounded shadow hover:bg-[#9d0202] hover:text-white transition-colors duration-300 text-base uppercase tracking-wide"
+                        className="inline-block bg-[#9d0202] text-[#ffffff] font-semibold px-6 py-3 rounded shadow hover:bg-[#ffffff] hover:text-[#9d0202] transition-colors duration-300 text-base uppercase tracking-wide"
                       >
                         {slides[currentSlide].slide_button_text}
                       </Link>

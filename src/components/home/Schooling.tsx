@@ -90,13 +90,8 @@ const Schooling: React.FC<SchoolingProps> = ({
             const linkTarget = item.curriculum_link?.target || (linkUrl.startsWith('http') ? '_blank' : undefined);
             const isExternal = linkUrl.startsWith('http');
             // Convert WordPress absolute URLs to relative paths for Next.js Link
-            let nextHref = linkUrl;
-            try {
-              const urlObj = new URL(linkUrl);
-              nextHref = urlObj.pathname + urlObj.search + urlObj.hash;
-            } catch (e) {
-              // If not a valid URL, keep as is
-            }
+            let nextHref = linkUrl.replace(/^https?:\/\/[^/]+/, '');
+            if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) return null;
             return (
               <SwiperSlide key={idx}>
                 <Link
@@ -106,7 +101,7 @@ const Schooling: React.FC<SchoolingProps> = ({
                   prefetch={false}
                 >
                   <motion.div
-                    className="relative overflow-hidden aspect-[3/5] w-full group shadow-lg border border-white"
+                    className="relative overflow-hidden aspect-[4/5] w-full group shadow-lg border border-white"
                     initial="hidden"
                     animate={controls}
                     variants={tileVariants}
