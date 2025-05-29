@@ -5,6 +5,8 @@ import AboutUs from '@/components/home/AboutUs';
 import { getHomePage } from '@/lib/wordpress';
 import { PrincipalMessage } from '@/components/home/PrincipalMessage';
 import History from '@/components/home/History';
+import VisionMission from '@/components/home/VisionMission';
+import Values from '@/components/home/Values';
 
 interface AboutUsData {
   acf: {
@@ -52,6 +54,11 @@ interface AboutUsData {
       url: string;
       alt: string;
     };
+    mission: string;
+    vision: string;
+    our_values_sub_heading: string;
+    our_values_heading: string;
+    our_values: string;
   };
 }
 
@@ -109,6 +116,31 @@ export default async function AboutUsPage() {
         image2Url={aboutAcf.history_image2?.url ?? ''}
         image2Alt={aboutAcf.history_image2?.alt ?? ''}
       />
+      <VisionMission
+        mission={aboutAcf.mission ?? ''}
+        vision={aboutAcf.vision ?? ''}
+        missionLabel="Our Mission"
+        visionLabel="Our Vision"
+      />
+      <Values
+        subheading={aboutAcf.our_values_sub_heading ?? ''}
+        heading={aboutAcf.our_values_heading ?? ''}
+        content={aboutAcf.our_values ?? ''}
+      />
+
+<PrincipalMessage
+        image={homeAcf.principal}
+        name={homeAcf.principals_name}
+        designation={homeAcf.designation_or_qualifications}
+        subheading={homeAcf.principals_message_subheading}
+        heading={homeAcf.principals_message_heading}
+        message={homeAcf.principals_message}
+        buttonText={homeAcf.principals_section_button_text}
+        buttonLink={homeAcf.principals_section_button_link}
+        anniversaryImage={homeAcf["125_years"]}
+      />
+
+      
       {/* About Us Section below the cover, using home page ACF data */}
       <AboutUs
         subheading={homeAcf.about_us_subhaeding ?? ''}
@@ -122,17 +154,7 @@ export default async function AboutUsPage() {
         image2Alt={homeAcf.about_image2?.alt ?? ''}
         backgroundImageUrl={homeAcf.about_background_image?.url ?? ''}
       />
-      <PrincipalMessage
-        image={homeAcf.principal}
-        name={homeAcf.principals_name}
-        designation={homeAcf.designation_or_qualifications}
-        subheading={homeAcf.principals_message_subheading}
-        heading={homeAcf.principals_message_heading}
-        message={homeAcf.principals_message}
-        buttonText={homeAcf.principals_section_button_text}
-        buttonLink={homeAcf.principals_section_button_link}
-        anniversaryImage={homeAcf["125_years"]}
-      />
+      
     </>
   );
 } 

@@ -86,7 +86,7 @@ const History: React.FC<HistoryProps> = ({
           <span className="text-xs uppercase tracking-widest text-[#9d0202] font-semibold mb-2">
             {subheading}
           </span>
-          <h2 className="text-3xl md:text-5xl text-gray-900 mb-6 leading-tight">
+          <h2 className="text-3xl md:text-6xl text-gray-900 mb-6 leading-tight">
             {heading}
           </h2>
           <div className="text-gray-700 text-base md:text-sm mb-8 max-w-xl prose prose-p:mb-4">
