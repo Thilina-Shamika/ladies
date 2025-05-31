@@ -23,3 +23,23 @@ body {
   color: var(--foreground);
   font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
+/* Custom styles for react-calendar to make all text black and visible */
+.react-calendar,
+.react-calendar * {
+  color: #111 !important;
+}
+
+.react-calendar__tile--now {
+  background: #f3f4f6 !important;
+  color: #111 !important;
+}
+
+.react-calendar__tile--active {
+  background: #2563eb !important;
+  color: #fff !important;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #bbb !important;
+}
