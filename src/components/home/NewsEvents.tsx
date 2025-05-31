@@ -91,26 +91,57 @@ export default function NewsEvents() {
   return (
     <section className="container mx-auto px-4 py-2 -mt-20 relative z-10">
       <h2 className="text-sm text-white mb-2 tracking-wide">News & Past Events</h2>
-      {/* Mobile: Swiper slider */}
-      <div className="block md:hidden relative">
+      {/* Swiper slider for all screen sizes */}
+      <div className="relative">
         <Swiper
           spaceBetween={16}
           slidesPerView={1}
+          slidesPerGroup={1}
           modules={[Navigation, Autoplay]}
           autoplay={{ delay: 3500, disableOnInteraction: false }}
+          loop={true}
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          breakpoints={{
+            768: {
+              slidesPerView: 3,
+              slidesPerGroup: 1,
+            },
+          }}
+          onInit={(swiper) => {
+            // @ts-ignore
+            swiper.params.navigation.prevEl = prevRef.current;
+            // @ts-ignore
+            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }}
         >
           {posts.map((post, idx) => (
             <SwiperSlide key={post.id}>
               <NewsEventCard post={post} idx={idx} />
             </SwiperSlide>
           ))}
+          {/* Navigation Arrows (desktop only) */}
+          <button
+            ref={prevRef}
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-[#9d0202] rounded-full shadow p-2 transition-all border border-gray-200"
+            aria-label="Previous"
+            style={{ marginLeft: '-2rem' }}
+          >
+            <ChevronLeft size={28} />
+          </button>
+          <button
+            ref={nextRef}
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-[#9d0202] rounded-full shadow p-2 transition-all border border-gray-200"
+            aria-label="Next"
+            style={{ marginRight: '-2rem' }}
+          >
+            <ChevronRight size={28} />
+          </button>
         </Swiper>
-      </div>
-      {/* Desktop: 3-column grid */}
-      <div className="hidden md:grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 bg-white rounded-lg shadow overflow-hidden">
-        {posts.map((post, idx) => (
-          <NewsEventCard post={post} idx={idx} key={post.id} />
-        ))}
       </div>
     </section>
   );

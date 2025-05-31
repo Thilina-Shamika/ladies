@@ -43,3 +43,8 @@ body {
 .react-calendar__month-view__days__day--neighboringMonth {
   color: #bbb !important;
 }
+
+/* Force extra margin below paragraphs for introduction page content */
+.force-paragraph-space p {
+  margin-bottom: 1.5rem !important;
+}

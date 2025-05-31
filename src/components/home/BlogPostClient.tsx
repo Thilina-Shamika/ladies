@@ -28,10 +28,10 @@ export function BlogPostClient({ post, featuredImage }: BlogPostClientProps) {
           </div>
         )}
 
-        <h1 className="text-4xl font-bold mb-6">{post.title.rendered}</h1>
+        <h1 className="text-3xl md:text-5xl text-black mb-6">{post.title.rendered}</h1>
 
         <div
-          className="prose prose-lg max-w-none"
+          className="prose text-black prose-lg max-w-none"
           dangerouslySetInnerHTML={{ __html: post.content.rendered }}
         />
       </motion.div>
