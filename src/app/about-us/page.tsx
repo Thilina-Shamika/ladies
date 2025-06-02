@@ -1,14 +1,14 @@
 import React from 'react';
-import AboutUs from '@/components/home/AboutUs';
+import Image from 'next/image';
 import { getPage } from '@/lib/wordpress';
-import { PrincipalMessage } from '@/components/home/PrincipalMessage';
 import History from '@/components/home/History';
 import VisionMission from '@/components/home/VisionMission';
 import Values from '@/components/home/Values';
-import Image from 'next/image';
+import { PrincipalMessage } from '@/components/home/PrincipalMessage';
+import AboutUs from '@/components/home/AboutUs';
 
-interface ACFData {
-  about_cover?: { url?: string; alt?: string };
+interface AboutACF {
+  about_cover?: { url: string; alt: string };
   about_heading?: string;
   about_subheading?: string;
   history_subheading?: string;
@@ -23,22 +23,33 @@ interface ACFData {
   our_values_sub_heading?: string;
   our_values_heading?: string;
   our_values?: string;
+}
+
+interface HomeACF {
+  principal?: { url: string; alt: string } | string;
   principals_name?: string;
-  principal?: string;
   designation_or_qualifications?: string;
   principals_message_subheading?: string;
   principals_message_heading?: string;
   principals_message?: string;
   principals_section_button_text?: string;
-  principals_section_button_link?: string;
-  [key: string]: unknown;
+  principals_section_button_link?: { url?: string };
+  about_us_subhaeding?: string;
+  about_heading?: string;
+  about_description?: string;
+  about_button_text?: string;
+  about_button_link?: { url?: string };
+  about_image?: { url?: string; alt?: string };
+  about_image2?: { url?: string; alt?: string };
+  about_background_image?: { url?: string };
+  [key: string]: any;
 }
 
 export default async function AboutPage() {
   const aboutPageData = await getPage('about-us');
-  const aboutAcf: ACFData = aboutPageData?.acf || {};
-  const homePage = await getPage('home');
-  const homeAcf: ACFData = homePage?.acf || {};
+  const aboutAcf = (aboutPageData?.acf || {}) as AboutACF;
+  const homePageData = await getPage('home');
+  const homeAcf = (homePageData?.acf || {}) as HomeACF;
 
   return (
     <main className="min-h-screen">
@@ -78,35 +89,53 @@ export default async function AboutPage() {
         image2Url={aboutAcf.history_image2?.url ?? ''}
         image2Alt={aboutAcf.history_image2?.alt ?? ''}
       />
+      {/* Vision & Mission Section */}
       <VisionMission
         mission={aboutAcf.mission ?? ''}
         vision={aboutAcf.vision ?? ''}
         missionLabel="Our Mission"
         visionLabel="Our Vision"
       />
+      {/* Values Section */}
       <Values
         subheading={aboutAcf.our_values_sub_heading ?? ''}
         heading={aboutAcf.our_values_heading ?? ''}
         content={aboutAcf.our_values ?? ''}
       />
+      {/* Principal's Message Section */}
       <PrincipalMessage
-        image={typeof homeAcf.principal === 'string' ? { url: homeAcf.principal, alt: homeAcf.principals_name || '' } : { url: '', alt: '' }}
+        image={
+          typeof homeAcf.principal === 'string'
+            ? { url: homeAcf.principal, alt: homeAcf.principals_name || '' }
+            : homeAcf.principal && homeAcf.principal.url
+              ? { url: homeAcf.principal.url, alt: homeAcf.principal.alt || homeAcf.principals_name || '' }
+              : { url: '', alt: '' }
+        }
         name={homeAcf.principals_name || ''}
         designation={homeAcf.designation_or_qualifications || ''}
         subheading={homeAcf.principals_message_subheading || ''}
         heading={homeAcf.principals_message_heading || ''}
         message={homeAcf.principals_message || ''}
         buttonText={homeAcf.principals_section_button_text || ''}
-        buttonLink={homeAcf.principals_section_button_link ? { url: homeAcf.principals_section_button_link } : undefined}
-        anniversaryImage={typeof homeAcf["125_years"] === 'string' ? { url: homeAcf["125_years"], alt: '125 Years Anniversary' } : undefined}
+        buttonLink={
+          homeAcf.principals_section_button_link && homeAcf.principals_section_button_link.url
+            ? { url: homeAcf.principals_section_button_link.url }
+            : undefined
+        }
+        anniversaryImage={homeAcf["125_years"]}
       />
-      {/* About Us Section below the cover, using home page ACF data */}
+      {/* About Us Section from home page */}
       <AboutUs
-        subheading={String(homeAcf.about_us_subhaeding ?? '')}
-        heading={String(homeAcf.about_heading ?? '')}
-        description={String(homeAcf.about_description ?? '')}
-        buttonText={String(homeAcf.about_button_text ?? '')}
-        buttonLink={String(homeAcf.about_button_link ?? '')}
+        subheading={homeAcf.about_us_subhaeding ?? ''}
+        heading={homeAcf.about_heading ?? ''}
+        description={homeAcf.about_description ?? ''}
+        buttonText={homeAcf.about_button_text ?? ''}
+        buttonLink={homeAcf.about_button_link?.url ?? ''}
+        imageUrl={homeAcf.about_image?.url ?? ''}
+        imageAlt={homeAcf.about_image?.alt ?? ''}
+        image2Url={homeAcf.about_image2?.url ?? ''}
+        image2Alt={homeAcf.about_image2?.alt ?? ''}
+        backgroundImageUrl={homeAcf.about_background_image?.url ?? ''}
       />
     </main>
   );

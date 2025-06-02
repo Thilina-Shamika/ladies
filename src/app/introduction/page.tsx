@@ -1,17 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
+import { getPage } from '@/lib/wordpress';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
-async function getIntroductionData() {
-  try {
-    const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=introduction`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
-  } catch {
-    return null;
-  }
+interface IntroductionACF {
+  learning_cover?: {
+    url: string;
+    alt: string;
+  };
+  learning_heading?: string;
+  learning_sub_heading?: string;
+  content_heading?: string;
+  content_subheading?: string;
+  content?: string;
 }
 
 // Helper to ensure paragraphs are wrapped in <p> tags for prose styling
@@ -23,8 +23,8 @@ function ensureParagraphs(html: string) {
 }
 
 export default async function IntroductionPage() {
-  const pageData = await getIntroductionData();
-  const acf = pageData?.acf || {};
+  const pageData = await getPage('introduction');
+  const acf = (pageData?.acf || {}) as IntroductionACF;
   return (
     <main className="pb-8">
       {/* Cover Section */}
@@ -59,12 +59,12 @@ export default async function IntroductionPage() {
             {/* Left: Content Heading and Content Subheading */}
             <div>
               {acf.content_heading && (
-                <h2 className="text-3xl md:text-5xl text-gray-900 mb-8 ">
+                <h2 className="text-3xl md:text-5xl text-gray-900 mb-8">
                   {acf.content_heading}
                 </h2>
               )}
               {acf.content_subheading && (
-                <div className="text-lg md:text-xl text-[#9d0202] font-semibold mb-6 whitespace-pre-line">
+                <div className="text-lg md:text-lg text-[#9d0202] font-semibold mb-6 whitespace-pre-line">
                   {acf.content_subheading}
                 </div>
               )}

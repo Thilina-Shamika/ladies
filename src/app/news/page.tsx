@@ -1,23 +1,20 @@
 import React from 'react';
 import Image from 'next/image';
 import Blog from '@/components/home/Blog';
+import { getPage } from '@/lib/wordpress';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
-async function getNewsPageData() {
-  try {
-    const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=news`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
-  } catch {
-    return null;
-  }
+interface NewsACF {
+  news_image?: {
+    url: string;
+    alt: string;
+  };
+  news_heading?: string;
+  news_subheading?: string;
 }
 
 export default async function NewsPage() {
-  const data = await getNewsPageData();
-  const acf = data?.acf || {};
+  const data = await getPage('news');
+  const acf = (data?.acf || {}) as NewsACF;
   return (
     <>
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
@@ -26,7 +23,7 @@ export default async function NewsPage() {
           {acf.news_image?.url && (
             <Image
               src={acf.news_image.url}
-              alt={acf.news_image.alt || acf.news_heading}
+              alt={acf.news_image.alt || acf.news_heading || ''}
               fill
               className="object-cover object-center w-full h-full"
               priority

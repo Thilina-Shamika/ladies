@@ -1,36 +1,28 @@
 import React from 'react';
 import { LeftImageRightContent } from '@/components/home/LeftImageRightContent';
 import Image from 'next/image';
+import { getPage } from '@/lib/wordpress';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
-async function getLearningEnvironmentsData() {
-  try {
-    const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=learning-environments`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
-  } catch {
-    return null;
-  }
+interface LearningEnvironmentsACF {
+  learning_cover?: {
+    url: string;
+    alt: string;
+  };
+  learning_heading?: string;
+  learning_sub_heading?: string;
 }
 
-async function getIntroductionData() {
-  try {
-    const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=introduction`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
-  } catch {
-    return null;
-  }
+interface IntroductionACF {
+  learning_heading?: string;
+  learning_sub_heading?: string;
+  content?: string;
 }
 
 export default async function LearningEnvironmentsPage() {
-  const pageData = await getLearningEnvironmentsData();
-  const acf = pageData?.acf || {};
-  const introPageData = await getIntroductionData();
-  const introAcf = introPageData?.acf || {};
+  const pageData = await getPage('learning-environments');
+  const acf = (pageData?.acf || {}) as LearningEnvironmentsACF;
+  const introPageData = await getPage('introduction');
+  const introAcf = (introPageData?.acf || {}) as IntroductionACF;
   return (
     <main className="pb-8">
       {/* Cover Section */}

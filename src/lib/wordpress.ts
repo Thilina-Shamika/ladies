@@ -1,73 +1,6 @@
 import { WordPressPost, WordPressPage } from './utils';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'http://ladies.local';
-
-// Add error handling for missing API URL
-if (!WORDPRESS_API_URL) {
-  console.error('NEXT_PUBLIC_WORDPRESS_API_URL is not defined');
-}
-
-// Add a function to check if we're in a build environment
-const isBuildEnvironment = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1';
-
-// Add a function to get mock data for build time
-const getMockData = () => {
-  return {
-    id: 1,
-    acf: {
-      top_bar_phone: '',
-      top_bar_email: '',
-      top_bar_menu: [],
-      social_media_icons: [],
-      main_logo: {
-        ID: 0,
-        id: 0,
-        title: '',
-        filename: '',
-        filesize: 0,
-        url: '',
-        link: '',
-        alt: '',
-        author: '',
-        description: '',
-        caption: '',
-        name: '',
-        status: '',
-        uploaded_to: 0,
-        date: '',
-        modified: '',
-        menu_order: 0,
-        mime_type: '',
-        type: '',
-        subtype: '',
-        icon: '',
-        width: 0,
-        height: 0,
-        sizes: {
-          thumbnail: '',
-          'thumbnail-width': 0,
-          'thumbnail-height': 0,
-          medium: '',
-          'medium-width': 0,
-          'medium-height': 0,
-          medium_large: '',
-          'medium_large-width': 0,
-          'medium_large-height': 0,
-          large: '',
-          'large-width': 0,
-          'large-height': 0,
-          '1536x1536': '',
-          '1536x1536-width': 0,
-          '1536x1536-height': 0,
-          '2048x2048': '',
-          '2048x2048-width': 0,
-          '2048x2048-height': 0
-        }
-      },
-      main_menu_items: []
-    }
-  };
-};
+const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || '';
 
 interface MenuLink {
   title: string;
@@ -154,11 +87,6 @@ export type WordPressHeader = {
 
 export async function getHeader(): Promise<WordPressHeader | null> {
   try {
-    // Return mock data during build
-    if (isBuildEnvironment) {
-      return getMockData();
-    }
-
     const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/top-bar-header?_embed&acf=true`;
 
     const response = await fetch(apiUrl, {
@@ -218,11 +146,6 @@ export async function getNonce(): Promise<string> {
 
 export async function getPosts(page = 1, perPage = 10): Promise<WordPressPost[]> {
   try {
-    // Return empty array during build
-    if (isBuildEnvironment) {
-      return [];
-    }
-
     const response = await fetch(
       `${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&page=${page}&per_page=${perPage}`,
       {
@@ -246,11 +169,6 @@ export async function getPosts(page = 1, perPage = 10): Promise<WordPressPost[]>
 
 export async function getPost(slug: string): Promise<WordPressPost | null> {
   try {
-    // Return null during build
-    if (isBuildEnvironment) {
-      return null;
-    }
-
     const response = await fetch(
       `${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&slug=${slug}`,
       {
@@ -275,11 +193,6 @@ export async function getPost(slug: string): Promise<WordPressPost | null> {
 
 export async function getPages(): Promise<WordPressPage[]> {
   try {
-    // Return empty array during build
-    if (isBuildEnvironment) {
-      return [];
-    }
-
     const response = await fetch(
       `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?_embed`,
       {
@@ -303,29 +216,42 @@ export async function getPages(): Promise<WordPressPage[]> {
 
 export async function getPage(slug: string): Promise<WordPressPage | null> {
   try {
-    // Return null during build
-    if (isBuildEnvironment) {
+    const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=${slug}&acf_format=standard`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      next: { revalidate: 3600 },
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Page API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: apiUrl,
+        errorText
+      });
+      throw new Error(`Failed to fetch page: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.warn(`No page data found for slug: ${slug}`);
       return null;
     }
 
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?_embed&slug=${slug}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        next: { revalidate: 3600 },
-      }
-    );
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch page');
-    }
-    
-    const pages = await response.json();
-    return pages[0] || null;
+    return data[0];
   } catch (error) {
-    console.error('Error fetching page:', error);
+    console.error('Error fetching page:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return null;
   }
 }
@@ -402,72 +328,6 @@ export interface HomePage {
 
 export async function getHomePage(): Promise<HomePage | null> {
   try {
-    // Return mock data during build
-    if (isBuildEnvironment) {
-      return {
-        id: 1,
-        acf: {
-          home_slider: [],
-          principal: {
-            url: '',
-            alt: '',
-            width: 0,
-            height: 0
-          },
-          principals_name: '',
-          designation_or_qualifications: '',
-          principals_message_subheading: '',
-          principals_message_heading: '',
-          principals_message: '',
-          "125_years": {
-            ID: 0,
-            id: 0,
-            title: '',
-            filename: '',
-            filesize: 0,
-            url: '',
-            link: '',
-            alt: '',
-            author: '',
-            description: '',
-            caption: '',
-            name: '',
-            status: '',
-            uploaded_to: 0,
-            date: '',
-            modified: '',
-            menu_order: 0,
-            mime_type: '',
-            type: '',
-            subtype: '',
-            icon: '',
-            width: 0,
-            height: 0,
-            sizes: {
-              thumbnail: '',
-              'thumbnail-width': 0,
-              'thumbnail-height': 0,
-              medium: '',
-              'medium-width': 0,
-              'medium-height': 0,
-              medium_large: '',
-              'medium_large-width': 0,
-              'medium_large-height': 0,
-              large: '',
-              'large-width': 0,
-              'large-height': 0,
-              '1536x1536': '',
-              '1536x1536-width': 0,
-              '1536x1536-height': 0,
-              '2048x2048': '',
-              '2048x2048-width': 0,
-              '2048x2048-height': 0
-            }
-          }
-        }
-      };
-    }
-
     const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=home&acf_format=standard`;
 
     const response = await fetch(apiUrl, {
@@ -499,27 +359,21 @@ export async function getHomePage(): Promise<HomePage | null> {
 
     return data[0];
   } catch (error) {
-    console.error('Error fetching home page:', error);
+    console.error('Error fetching home page:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return null;
   }
 }
 
 export async function getCategoriesByIds(ids: number[]): Promise<{ id: number; name: string; slug: string }[]> {
-  try {
-    // Return empty array during build
-    if (isBuildEnvironment) {
-      return [];
-    }
-
-    if (!ids.length) return [];
-    const params = ids.map(id => `include[]=${id}`).join('&');
-    const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}`, {
-      next: { revalidate: 3600 },
-    });
-    if (!response.ok) return [];
-    return response.json();
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    return [];
-  }
+  if (!ids.length) return [];
+  const params = ids.map(id => `include[]=${id}`).join('&');
+  const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}`, {
+    next: { revalidate: 3600 },
+  });
+  if (!response.ok) return [];
+  return response.json();
 } 

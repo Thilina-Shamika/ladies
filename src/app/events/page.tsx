@@ -1,23 +1,20 @@
 import React from 'react';
 import EventsCalendarAndList from '@/components/events/EventsCalendarAndList';
 import Image from 'next/image';
+import { getPage } from '@/lib/wordpress';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
-async function getEventsPageData() {
-  try {
-    const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=events`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
-  } catch {
-    return null;
-  }
+interface EventsACF {
+  events_cover?: {
+    url: string;
+    alt: string;
+  };
+  events_heading?: string;
+  events_subheading?: string;
 }
 
 export default async function EventsPage() {
-  const eventsPageData = await getEventsPageData();
-  const acf = eventsPageData?.acf || {};
+  const eventsPageData = await getPage('events');
+  const acf = (eventsPageData?.acf || {}) as EventsACF;
   return (
     <main className="pb-8">
       {/* Cover Section */}

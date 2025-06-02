@@ -1,22 +1,22 @@
 import React from 'react';
 import Image from 'next/image';
+import { getPage } from '@/lib/wordpress';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
-async function getClassroomData() {
-  try {
-    const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=in-the-classroom`, { next: { revalidate: 60 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.length > 0 ? data[0] : null;
-  } catch {
-    return null;
-  }
+interface ClassroomACF {
+  classroom_cover?: {
+    url: string;
+    alt: string;
+  };
+  classroom_heading?: string;
+  classroom_sub_heading?: string;
+  content_heading?: string;
+  content_subheading?: string;
+  content?: string;
 }
 
 export default async function InTheClassroomPage() {
-  const pageData = await getClassroomData();
-  const acf = pageData?.acf || {};
+  const pageData = await getPage('in-the-classroom');
+  const acf = (pageData?.acf || {}) as ClassroomACF;
   return (
     <main className="pb-8">
       {/* Cover Section */}
