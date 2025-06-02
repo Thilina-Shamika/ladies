@@ -28,7 +28,7 @@ const History: React.FC<HistoryProps> = ({
   image2Alt = '',
 }) => {
   // Convert backend URL to frontend URL
-  let nextHref = buttonLink.replace(/^https?:\/\/[^/]+/, '');
+  let nextHref = typeof buttonLink === 'string' ? buttonLink.replace(/^https?:\/\/[^/]+/, '') : '/';
   if (nextHref === '') nextHref = '/';
 
   return (

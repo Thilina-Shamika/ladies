@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
@@ -22,11 +23,13 @@ export default async function InTheClassroomPage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.classroom_cover?.url && (
-            <img
+            <Image
               src={acf.classroom_cover.url}
               alt={acf.classroom_heading || 'In the Classroom'}
               className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
+              width={1920}
+              height={1080}
             />
           )}
           <div className="absolute inset-0 bg-black/60" />

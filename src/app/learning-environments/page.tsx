@@ -1,5 +1,6 @@
 import React from 'react';
 import { LeftImageRightContent } from '@/components/home/LeftImageRightContent';
+import Image from 'next/image';
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
@@ -36,11 +37,12 @@ export default async function LearningEnvironmentsPage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.learning_cover?.url && (
-            <img
+            <Image
               src={acf.learning_cover.url}
               alt={acf.learning_heading || 'Learning Environments'}
               className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
+              fill
             />
           )}
           <div className="absolute inset-0 bg-black/60" />

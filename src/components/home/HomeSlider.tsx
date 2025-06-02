@@ -97,7 +97,7 @@ export function HomeSlider({ slides }: HomeSliderProps) {
                 )}
                 {slides[currentSlide].slide_button_text && slides[currentSlide].slide_button_link?.url && (
                   (() => {
-                    let nextHref = slides[currentSlide].slide_button_link.url.replace(/^https?:\/\/[^/]+/, '');
+                    const nextHref = typeof slides[currentSlide].slide_button_link.url === 'string' ? slides[currentSlide].slide_button_link.url.replace(/^https?:\/\/[^/]+/, '') : '/';
                     if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                       return (
                         <motion.a

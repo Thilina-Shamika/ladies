@@ -16,7 +16,6 @@ interface Post {
   title: { rendered: string };
   excerpt: { rendered: string };
   date: string;
-  link: string;
   slug: string;
   _embedded?: {
     "wp:featuredmedia"?: Array<{ source_url: string; alt_text: string }>;
@@ -34,14 +33,10 @@ const News: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    getPosts(currentPage, POSTS_PER_PAGE).then((data: any) => {
+    getPosts(currentPage, POSTS_PER_PAGE).then((data: Post[]) => {
       setPosts(data);
-      // Try to get total pages from headers if available
-      if (Array.isArray(data) && data.length > 0 && data[0].totalPages) {
-        setTotalPages(data[0].totalPages);
-      } else {
-        setTotalPages(data.length < POSTS_PER_PAGE ? 1 : currentPage + 1); // fallback
-      }
+      // Set total pages based on the length of the data array
+      setTotalPages(data.length < POSTS_PER_PAGE ? 1 : currentPage + 1); // fallback
       setLoading(false);
     });
   }, [currentPage]);

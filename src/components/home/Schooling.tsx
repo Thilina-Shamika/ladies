@@ -87,10 +87,8 @@ const Schooling: React.FC<SchoolingProps> = ({
         >
           {items.map((item, idx) => {
             const linkUrl = item.curriculum_link?.url || '#';
-            const linkTarget = item.curriculum_link?.target || (linkUrl.startsWith('http') ? '_blank' : undefined);
-            const isExternal = linkUrl.startsWith('http');
             // Convert WordPress absolute URLs to relative paths for Next.js Link
-            let nextHref = linkUrl.replace(/^https?:\/\/[^/]+/, '');
+            const nextHref = typeof linkUrl === 'string' ? linkUrl.replace(/^https?:\/\/[^/]+/, '') : '#';
             if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) return null;
             return (
               <SwiperSlide key={idx}>
@@ -145,16 +143,8 @@ const Schooling: React.FC<SchoolingProps> = ({
       <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[3px] w-full">
         {items.map((item, idx) => {
           const linkUrl = item.curriculum_link?.url || '#';
-          const linkTarget = item.curriculum_link?.target || (linkUrl.startsWith('http') ? '_blank' : undefined);
-          const isExternal = linkUrl.startsWith('http');
           // Convert WordPress absolute URLs to relative paths for Next.js Link
-          let nextHref = linkUrl;
-          try {
-            const urlObj = new URL(linkUrl);
-            nextHref = urlObj.pathname + urlObj.search + urlObj.hash;
-          } catch (e) {
-            // If not a valid URL, keep as is
-          }
+          const nextHref = typeof linkUrl === 'string' ? linkUrl.replace(/^https?:\/\/[^/]+/, '') : '#';
           return (
             <Link
               key={idx}

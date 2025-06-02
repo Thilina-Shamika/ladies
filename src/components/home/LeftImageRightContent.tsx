@@ -12,12 +12,6 @@ interface LeftImageRightContentProps {
   introSubheading?: string;
 }
 
-function getExcerpt(html: string, length = 160) {
-  // Remove HTML tags and get the first N chars
-  const text = html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-  return text.length > length ? text.slice(0, length) + '…' : text;
-}
-
 export const LeftImageRightContent: React.FC<LeftImageRightContentProps> = ({
   imageUrl,
   imageAlt = '',

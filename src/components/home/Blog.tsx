@@ -4,13 +4,34 @@ import Image from "next/image";
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
+interface Post {
+  id: number;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  date: string;
+  slug: string;
+  categories?: string[];
+  _embedded?: {
+    'wp:featuredmedia'?: Array<{
+      source_url: string;
+      alt_text?: string;
+    }>;
+  };
+}
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export default function Blog() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [recentPosts, setRecentPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
   const [search, setSearch] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sort, setSort] = useState<string>("date-desc");
 
   useEffect(() => {
@@ -34,10 +55,10 @@ export default function Blog() {
       filtered = filtered.filter(
         (post) =>
           post.title.rendered.toLowerCase().includes(search.toLowerCase()) ||
-          post.content.rendered.toLowerCase().includes(search.toLowerCase())
+          post.excerpt.rendered.toLowerCase().includes(search.toLowerCase())
       );
     }
-    if (selectedCategory) {
+    if (selectedCategory !== 'all') {
       filtered = filtered.filter((post) => post.categories?.includes(selectedCategory));
     }
     // Sorting
@@ -54,7 +75,7 @@ export default function Blog() {
   }, [search, posts, selectedCategory, sort]);
 
   // Helper: get post count for a category
-  const getCategoryCount = (catId: number) => posts.filter((post) => post.categories?.includes(catId)).length;
+  const getCategoryCount = (catId: string) => posts.filter((post) => post.categories?.includes(catId)).length;
 
   return (
     <div className="container mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-12 gap-12">
@@ -116,14 +137,21 @@ export default function Blog() {
         <div className="bg-white rounded-xl shadow p-6 mb-8">
           <h3 className="text-lg font-bold mb-4 text-[#9d0202]">Categories</h3>
           <ul className="space-y-2">
+            <li
+              className={`flex items-center justify-between text-gray-700 hover:text-[#9d0202] cursor-pointer transition-colors ${selectedCategory === 'all' ? 'font-bold' : ''}`}
+              onClick={() => setSelectedCategory('all')}
+            >
+              <span>All</span>
+              <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{getCategoryCount('all')}</span>
+            </li>
             {categories.map((cat) => (
               <li
                 key={cat.id}
-                className={`flex items-center justify-between text-gray-700 hover:text-[#9d0202] cursor-pointer transition-colors ${selectedCategory === cat.id ? 'font-bold' : ''}`}
-                onClick={() => setSelectedCategory(cat.id === selectedCategory ? null : cat.id)}
+                className={`flex items-center justify-between text-gray-700 hover:text-[#9d0202] cursor-pointer transition-colors ${selectedCategory === cat.slug ? 'font-bold' : ''}`}
+                onClick={() => setSelectedCategory(cat.slug)}
               >
                 <span>{cat.name}</span>
-                <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{getCategoryCount(cat.id)}</span>
+                <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{getCategoryCount(cat.slug)}</span>
               </li>
             ))}
           </ul>

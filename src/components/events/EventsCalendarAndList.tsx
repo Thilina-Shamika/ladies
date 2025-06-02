@@ -1,13 +1,19 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import Calendar from 'react-calendar';
+import dynamic from 'next/dynamic';
 import 'react-calendar/dist/Calendar.css';
-import { format, parse } from "date-fns";
 import Link from 'next/link';
+import Image from 'next/image';
+import { format } from "date-fns";
+
+// Dynamically import Calendar with no SSR
+const Calendar = dynamic(() => import('react-calendar'), {
+  ssr: false,
+  loading: () => <div className="h-[400px] bg-gray-100 rounded-lg animate-pulse" />
+});
 
 // Add Value type for react-calendar
-// import type { Value } from 'react-calendar';
 type CalendarValue = Date | Date[] | null;
 
 interface EventItem {
@@ -134,9 +140,11 @@ export default function EventsCalendarAndList() {
                 className="bg-white rounded-xl shadow flex flex-col md:flex-row items-center p-4 gap-4 hover:shadow-lg transition cursor-pointer no-underline"
               >
                 {event.acf.event_image?.url && (
-                  <img
+                  <Image
                     src={event.acf.event_image.url}
                     alt={event.acf.event_name}
+                    width={160}
+                    height={128}
                     className="w-full md:w-40 h-32 object-contain rounded-lg"
                   />
                 )}
@@ -183,7 +191,7 @@ export default function EventsCalendarAndList() {
                 }
               }}
               value={getSelectedDate(selectedDate)}
-              tileContent={({ date, view }) => {
+              tileContent={({ date }) => {
                 const dateStr = format(date, 'yyyy-MM-dd');
                 if (eventDatesSet.has(dateStr)) {
                   return <span className="block w-2 h-2 mx-auto mt-1 rounded-full bg-red-600" />;
@@ -225,9 +233,11 @@ export default function EventsCalendarAndList() {
                   >
                     <div className="flex gap-3">
                       {event.acf.event_image?.url ? (
-                        <img
+                        <Image
                           src={event.acf.event_image.url}
                           alt={event.acf.event_name}
+                          width={64}
+                          height={64}
                           className="w-16 h-16 object-cover rounded-lg"
                         />
                       ) : (

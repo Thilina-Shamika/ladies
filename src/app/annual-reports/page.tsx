@@ -27,6 +27,26 @@ async function getAnnualReportsData() {
   }
 }
 
+interface Report {
+  id: number;
+  title: { rendered: string };
+  content: { rendered: string };
+  date: string;
+  slug: string;
+  _embedded?: {
+    'wp:featuredmedia'?: Array<{ source_url: string; alt_text?: string }>;
+  };
+  acf: {
+    report_file: {
+      url: string;
+    };
+    report_cover: {
+      url: string;
+      alt: string;
+    };
+  };
+}
+
 export default async function AnnualReportsPage() {
   const pageData = await getAnnualReportsData();
   const acf = pageData?.acf || {};
@@ -37,11 +57,13 @@ export default async function AnnualReportsPage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.reports_cover?.url && (
-            <img
+            <Image
               src={acf.reports_cover.url}
               alt={acf.reports_heading || 'Annual Reports'}
               className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
+              fill
+              priority
             />
           )}
           <div className="absolute inset-0 bg-black/60" />
@@ -58,12 +80,11 @@ export default async function AnnualReportsPage() {
       {/* Annual Report Posts Grid */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          
           {posts.length === 0 ? (
             <div className="text-center py-12 text-gray-400">No annual reports found.</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post: any) => {
+              {posts.map((post: Report) => {
                 const featured = post._embedded?.["wp:featuredmedia"]?.[0];
                 const nextHref = `/blog/${post.slug}`;
                 return (

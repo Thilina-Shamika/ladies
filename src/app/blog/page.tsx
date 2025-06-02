@@ -6,13 +6,8 @@ export const metadata = {
   description: 'Read our latest blog posts',
 };
 
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const resolvedSearchParams = searchParams ? await searchParams : {};
-  const currentPage = Number(resolvedSearchParams.page) || 1;
+export default async function BlogPage({ searchParams }: { searchParams?: { [key: string]: string | string[] } }) {
+  const currentPage = Number(searchParams?.page) || 1;
   const posts = await getPosts(currentPage, 9);
 
   return <BlogListClient posts={posts} currentPage={currentPage} />;

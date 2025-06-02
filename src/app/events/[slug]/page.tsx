@@ -1,6 +1,5 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 
 interface EventData {
   id: number;

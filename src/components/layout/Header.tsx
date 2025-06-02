@@ -55,7 +55,7 @@ export function Header({ headerData }: HeaderProps) {
               <div className="hidden md:flex items-center space-x-4">
                 {headerData?.acf.top_bar_menu.map((item, index) => {
                   // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
-                  let nextHref = item.item_link.url.replace(/^https?:\/\/[^/]+/, '');
+                  const nextHref = item.item_link.url.replace(/^https?:\/\/[^/]+/, '');
                   if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                     return (
                       <a
@@ -143,7 +143,7 @@ export function Header({ headerData }: HeaderProps) {
             >
               {headerData?.acf.main_menu_items.map((item, index) => {
                 // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
-                let nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
+                const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
                 if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                   return (
                     <a
@@ -216,7 +216,7 @@ export function Header({ headerData }: HeaderProps) {
                 <nav className="mt-8 space-y-4">
                   {headerData?.acf.main_menu_items.map((item, index) => {
                     // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
-                    let nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
+                    const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
                     if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                       return (
                         <a

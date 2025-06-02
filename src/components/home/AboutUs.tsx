@@ -85,7 +85,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
             />
             {buttonText && buttonLink && (
               (() => {
-                let nextHref = buttonLink.replace(/^https?:\/\/[^/]+/, '');
+                const nextHref = buttonLink.replace(/^https?:\/\/[^/]+/, '');
                 if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                   return (
                     <a

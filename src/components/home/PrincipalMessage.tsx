@@ -120,7 +120,7 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
             />
             {buttonText && buttonLink?.url && (
               (() => {
-                let nextHref = buttonLink.url.replace(/^https?:\/\/[^/]+/, '');
+                const nextHref = typeof buttonLink.url === 'string' ? buttonLink.url.replace(/^https?:\/\/[^/]+/, '') : '/';
                 if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                   return (
                     <motion.a

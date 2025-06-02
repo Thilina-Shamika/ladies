@@ -53,7 +53,7 @@ export default function NewsEvents() {
         }
       >
         <div className="flex items-center gap-2 mb-3 flex-wrap">
-          {getCategoryLabels(post).map((cat, i) => (
+          {getCategoryLabels(post).map((cat) => (
             <span
               key={cat}
               className="inline-block bg-[#f3f4f6] text-[#9d0202] text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider border border-[#e5e7eb] mr-2 mb-1"
@@ -111,9 +111,9 @@ export default function NewsEvents() {
             },
           }}
           onInit={(swiper) => {
-            // @ts-ignore
+            // @ts-expect-error - Swiper types are not properly exported
             swiper.params.navigation.prevEl = prevRef.current;
-            // @ts-ignore
+            // @ts-expect-error - Swiper types are not properly exported
             swiper.params.navigation.nextEl = nextRef.current;
             swiper.navigation.init();
             swiper.navigation.update();

@@ -30,7 +30,7 @@ const Tiles: React.FC<TilesProps> = ({ items }) => {
       >
         {items.map((item, idx) => {
           // Convert WordPress absolute URLs to relative paths for Next.js Link
-          let nextHref = item.tile_link.url.replace(/^https?:\/\/[^/]+/, '');
+          const nextHref = typeof item.tile_link.url === 'string' ? item.tile_link.url.replace(/^https?:\/\/[^/]+/, '') : '#';
           if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
             return (
               <a

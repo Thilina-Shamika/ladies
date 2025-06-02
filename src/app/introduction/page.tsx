@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
@@ -11,11 +12,6 @@ async function getIntroductionData() {
   } catch {
     return null;
   }
-}
-
-// Helper to convert top-level <div> tags to <p> tags
-function divsToParagraphs(html: string) {
-  return html.replace(/<div[^>]*>([\s\S]*?)<\/div>/gi, '<p>$1</p>');
 }
 
 // Helper to ensure paragraphs are wrapped in <p> tags for prose styling
@@ -35,11 +31,13 @@ export default async function IntroductionPage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.learning_cover?.url && (
-            <img
+            <Image
               src={acf.learning_cover.url}
               alt={acf.learning_heading || 'Introduction'}
               className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
+              width={1920}
+              height={1080}
             />
           )}
           <div className="absolute inset-0 bg-black/60" />

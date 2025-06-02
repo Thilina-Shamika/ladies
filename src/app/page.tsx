@@ -7,6 +7,14 @@ import Tiles from '@/components/home/Tiles';
 import Schooling from '@/components/home/Schooling';
 import News from '@/components/home/News';
 
+interface CurriculumItem {
+  acf_fc_layout: string;
+  curriculum_image: { url: string; alt: string };
+  curriculum_heading: string;
+  curriculum_sub_heading?: string;
+  curriculum_link: { title: string; url: string; target?: string };
+}
+
 export default async function Home() {
   const homePage = await getHomePage();
 
