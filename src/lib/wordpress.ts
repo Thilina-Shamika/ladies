@@ -95,8 +95,7 @@ export async function getHeader(): Promise<WordPressHeader | null> {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      cache: 'no-store',
-      next: { revalidate: 0 },
+      next: { revalidate: 3600 },
     });
     
     if (!response.ok) {
@@ -153,6 +152,7 @@ export async function getPosts(page = 1, perPage = 10): Promise<WordPressPost[]>
         headers: {
           'Content-Type': 'application/json',
         },
+        next: { revalidate: 3600 },
       }
     );
     
@@ -175,6 +175,7 @@ export async function getPost(slug: string): Promise<WordPressPost | null> {
         headers: {
           'Content-Type': 'application/json',
         },
+        next: { revalidate: 3600 },
       }
     );
     
@@ -198,6 +199,7 @@ export async function getPages(): Promise<WordPressPage[]> {
         headers: {
           'Content-Type': 'application/json',
         },
+        next: { revalidate: 3600 },
       }
     );
     
@@ -220,6 +222,7 @@ export async function getPage(slug: string): Promise<WordPressPage | null> {
         headers: {
           'Content-Type': 'application/json',
         },
+        next: { revalidate: 3600 },
       }
     );
     
@@ -315,8 +318,7 @@ export async function getHomePage(): Promise<HomePage | null> {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      cache: 'no-store',
-      next: { revalidate: 0 },
+      next: { revalidate: 3600 },
     });
     
     if (!response.ok) {
@@ -351,7 +353,9 @@ export async function getHomePage(): Promise<HomePage | null> {
 export async function getCategoriesByIds(ids: number[]): Promise<{ id: number; name: string; slug: string }[]> {
   if (!ids.length) return [];
   const params = ids.map(id => `include[]=${id}`).join('&');
-  const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}`);
+  const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}`, {
+    next: { revalidate: 3600 },
+  });
   if (!response.ok) return [];
   return response.json();
 } 
