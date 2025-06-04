@@ -99,7 +99,7 @@ const Schooling: React.FC<SchoolingProps> = ({
                   prefetch={false}
                 >
                   <motion.div
-                    className="relative overflow-hidden aspect-[4/5] w-full group shadow-lg border border-white"
+                    className="relative overflow-hidden aspect-square w-full group shadow-lg border border-white rounded-2xl"
                     initial="hidden"
                     animate={controls}
                     variants={tileVariants}
@@ -110,7 +110,7 @@ const Schooling: React.FC<SchoolingProps> = ({
                         src={item.curriculum_image.url}
                         alt={item.curriculum_image.alt || item.curriculum_heading}
                         fill
-                        className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
                         priority={idx === 0}
                       />
                     </div>
@@ -139,51 +139,70 @@ const Schooling: React.FC<SchoolingProps> = ({
           </div>
         </Swiper>
       </div>
-      {/* Desktop Grid */}
-      <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[3px] w-full">
-        {items.map((item, idx) => {
-          const linkUrl = item.curriculum_link?.url || '#';
-          // Convert WordPress absolute URLs to relative paths for Next.js Link
-          const nextHref = typeof linkUrl === 'string' ? linkUrl.replace(/^https?:\/\/[^/]+/, '') : '#';
-          return (
-            <Link
-              key={idx}
-              href={nextHref}
-              className="block"
-              title={item.curriculum_link?.title || ''}
-              prefetch={false}
-            >
-              <motion.div
-                className="relative overflow-hidden aspect-[3/5] w-full group shadow-lg border border-white"
-                initial="hidden"
-                animate={controls}
-                variants={tileVariants}
-                custom={idx}
-              >
-                <div className="absolute inset-0 w-full h-full">
-                  <Image
-                    src={item.curriculum_image.url}
-                    alt={item.curriculum_image.alt || item.curriculum_heading}
-                    fill
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                    priority={idx === 0}
-                  />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />
-                <div className="absolute bottom-0 left-0 right-0 z-10 p-6 text-white w-full">
-                  {item.curriculum_sub_heading && (
-                    <div className="text-sm font-medium mb-1 opacity-90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                      {item.curriculum_sub_heading}
+      {/* Desktop Swiper Slider */}
+      <div className="hidden md:block relative">
+        <Swiper
+          modules={[Autoplay, Navigation]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          spaceBetween={16}
+          slidesPerView={5}
+          loop={true}
+          navigation={{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          }}
+        >
+          {items.map((item, idx) => {
+            const linkUrl = item.curriculum_link?.url || '#';
+            const nextHref = typeof linkUrl === 'string' ? linkUrl.replace(/^https?:\/\/[^/]+/, '') : '#';
+            return (
+              <SwiperSlide key={idx}>
+                <Link
+                  href={nextHref}
+                  className="block"
+                  title={item.curriculum_link?.title || ''}
+                  prefetch={false}
+                >
+                  <motion.div
+                    className="relative overflow-hidden aspect-square w-full group shadow-lg border border-white rounded-2xl"
+                    initial="hidden"
+                    animate={controls}
+                    variants={tileVariants}
+                    custom={idx}
+                  >
+                    <div className="absolute inset-0 w-full h-full">
+                      <Image
+                        src={item.curriculum_image.url}
+                        alt={item.curriculum_image.alt || item.curriculum_heading}
+                        fill
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                        priority={idx === 0}
+                      />
                     </div>
-                  )}
-                  <div className="text-lg md:text-lg font-semibold">
-                    {item.curriculum_heading}
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-          );
-        })}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />
+                    <div className="absolute bottom-0 left-0 right-0 z-10 p-6 text-white w-full">
+                      {item.curriculum_sub_heading && (
+                        <div className="text-sm font-medium mb-1 opacity-90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                          {item.curriculum_sub_heading}
+                        </div>
+                      )}
+                      <div className="text-lg md:text-lg font-semibold">
+                        {item.curriculum_heading}
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              </SwiperSlide>
+            );
+          })}
+          {/* Navigation Arrows */}
+          <div className="swiper-button-prev !left-2 !text-white !top-1/2 !-translate-y-1/2 !z-20">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+          <div className="swiper-button-next !right-2 !text-white !top-1/2 !-translate-y-1/2 !z-20">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+        </Swiper>
       </div>
     </section>
   );
