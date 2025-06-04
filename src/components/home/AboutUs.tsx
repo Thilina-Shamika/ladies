@@ -72,7 +72,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left: Text Content */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start max-w-lg w-full">
             <span className="text-xs uppercase tracking-widest text-[#9d0202] font-semibold mb-2">
               {subheading}
             </span>
