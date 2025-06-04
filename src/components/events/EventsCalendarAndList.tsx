@@ -140,13 +140,14 @@ export default function EventsCalendarAndList() {
                 className="bg-white rounded-xl shadow flex flex-col md:flex-row items-center p-4 gap-4 hover:shadow-lg transition cursor-pointer no-underline"
               >
                 {event.acf.event_image?.url && (
-                  <Image
-                    src={event.acf.event_image.url}
-                    alt={event.acf.event_name}
-                    width={160}
-                    height={128}
-                    className="w-full md:w-40 h-32 object-contain rounded-lg"
-                  />
+                  <div className="w-full md:w-40 h-32 relative rounded-lg overflow-hidden">
+                    <Image
+                      src={event.acf.event_image.url}
+                      alt={event.acf.event_name}
+                      fill
+                      className="object-cover object-center"
+                    />
+                  </div>
                 )}
                 <div className="flex-1 flex flex-col gap-2">
                   <div className="flex flex-wrap gap-4 text-xs text-gray-700 items-center">
