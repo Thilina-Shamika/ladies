@@ -368,10 +368,10 @@ export async function getHomePage(): Promise<HomePage | null> {
   }
 }
 
-export async function getCategoriesByIds(ids: number[]): Promise<{ id: number; name: string; slug: string }[]> {
+export async function getCategoriesByIds(ids: number[]): Promise<{ id: number; name: string; slug: string; count: number }[]> {
   if (!ids.length) return [];
   const params = ids.map(id => `include[]=${id}`).join('&');
-  const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}`, {
+  const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?${params}&_fields=id,name,slug,count`, {
     next: { revalidate: 3600 },
   });
   if (!response.ok) return [];

@@ -10,7 +10,7 @@ interface Post {
   excerpt: { rendered: string };
   date: string;
   slug: string;
-  categories?: string[];
+  categories?: number[];
   _embedded?: {
     'wp:featuredmedia'?: Array<{
       source_url: string;
@@ -23,6 +23,7 @@ interface Category {
   id: number;
   name: string;
   slug: string;
+  count: number;
 }
 
 export default function Blog() {
@@ -41,7 +42,7 @@ export default function Blog() {
       setPosts(data);
       setFilteredPosts(data);
       // Fetch categories
-      const catRes = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?per_page=50&_embed`);
+      const catRes = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?per_page=50&_fields=id,name,slug,count`);
       setCategories(await catRes.json());
       // Fetch recent posts
       setRecentPosts(data.slice(0, 5));
@@ -59,7 +60,10 @@ export default function Blog() {
       );
     }
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter((post) => post.categories?.includes(selectedCategory));
+      const selectedCat = categories.find(cat => cat.slug === selectedCategory);
+      if (selectedCat) {
+        filtered = filtered.filter((post) => post.categories?.includes(selectedCat.id));
+      }
     }
     // Sorting
     if (sort === "date-desc") {
@@ -72,10 +76,7 @@ export default function Blog() {
       filtered = filtered.slice().sort((a, b) => b.title.rendered.localeCompare(a.title.rendered));
     }
     setFilteredPosts(filtered);
-  }, [search, posts, selectedCategory, sort]);
-
-  // Helper: get post count for a category
-  const getCategoryCount = (catId: string) => posts.filter((post) => post.categories?.includes(catId)).length;
+  }, [search, posts, selectedCategory, sort, categories]);
 
   return (
     <div className="container mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-12 gap-12">
@@ -142,7 +143,7 @@ export default function Blog() {
               onClick={() => setSelectedCategory('all')}
             >
               <span>All</span>
-              <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{getCategoryCount('all')}</span>
+              <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{posts.length}</span>
             </li>
             {categories.map((cat) => (
               <li
@@ -151,7 +152,7 @@ export default function Blog() {
                 onClick={() => setSelectedCategory(cat.slug)}
               >
                 <span>{cat.name}</span>
-                <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{getCategoryCount(cat.slug)}</span>
+                <span className="ml-2 bg-gray-100 rounded-full px-2 py-0.5 text-xs font-semibold">{cat.count}</span>
               </li>
             ))}
           </ul>
