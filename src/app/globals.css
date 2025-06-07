@@ -48,3 +48,38 @@ body {
 .force-paragraph-space p {
   margin-bottom: 1.5rem !important;
 }
+
+/* WYSIWYG content base text color */
+.wysiwyg-content {
+  color: #111;
+}
+
+/* Ensure WYSIWYG headings are visible, spaced, and styled */
+.wysiwyg-content h1,
+.wysiwyg-content h2,
+.wysiwyg-content h3,
+.wysiwyg-content h4,
+.wysiwyg-content h5,
+.wysiwyg-content h6 {
+  display: block;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  color: #9d0202;
+}
+
+.wysiwyg-content h2 {
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.wysiwyg-content h3 {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+/* Ensure proper paragraph spacing in WYSIWYG content */
+.wysiwyg-content p {
+  margin-bottom: 1.5em;
+  line-height: 1.6;
+}
