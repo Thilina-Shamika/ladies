@@ -39,5 +39,18 @@ export type WordPressPage = {
   content: {
     rendered: string;
   };
-  acf?: Record<string, unknown>;
+  acf?: {
+    sub_heading?: string;
+    heading?: string;
+    cover_image?: {
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+    content_heading?: string;
+    '1st_paragraph'?: string;
+    block_quote?: string;
+    '2nd_paragraph'?: string;
+  };
 }; 
