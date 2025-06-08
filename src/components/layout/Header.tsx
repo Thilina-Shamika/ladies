@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WordPressHeader } from '@/lib/wordpress';
+import AboutUsSubMenu from './AboutUsSubMenu';
 
 interface HeaderProps {
   headerData: WordPressHeader | null;
@@ -21,6 +22,39 @@ const socialIcons: Record<string, LucideIcon> = {
 
 export function Header({ headerData }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [aboutSubMenu, setAboutSubMenu] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchAboutSubMenu() {
+      try {
+        const res = await fetch('http://ladies.local/wp-json/wp/v2/about-submenu?per_page=1');
+        const data = await res.json();
+        console.log('Raw API Response:', data);
+        if (data && data[0]?.acf?.about_submenu) {
+          console.log('Submenu Items:', data[0].acf.about_submenu);
+          setAboutSubMenu(data[0].acf.about_submenu);
+        } else {
+          console.log('No submenu items found in response');
+        }
+      } catch (error) {
+        console.error('Error fetching submenu:', error);
+      }
+    }
+    fetchAboutSubMenu();
+  }, []);
+
+  // Remove About Us from main menu items
+  const mainMenuItems = headerData?.acf.main_menu_items.filter(
+    (item) => item.main_menu_item_name.toLowerCase() !== 'about us'
+  ) || [];
+
+  // Find Home menu item and the rest
+  const homeMenuItem = mainMenuItems.find(
+    (item) => item.main_menu_item_name.toLowerCase() === 'home'
+  );
+  const otherMenuItems = mainMenuItems.filter(
+    (item) => item.main_menu_item_name.toLowerCase() !== 'home'
+  );
 
   return (
     <>
@@ -141,8 +175,20 @@ export function Header({ headerData }: HeaderProps) {
               transition={{ delay: 1, duration: 0.8 }}
               className="hidden md:flex items-center space-x-8"
             >
-              {headerData?.acf.main_menu_items.map((item, index) => {
-                // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
+              {/* Home menu item */}
+              {homeMenuItem && (
+                <Link
+                  href={homeMenuItem.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '')}
+                  className="text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                  prefetch={false}
+                >
+                  {homeMenuItem.main_menu_item_name}
+                </Link>
+              )}
+              {/* About Us SubMenu */}
+              <AboutUsSubMenu items={aboutSubMenu} />
+              {/* Other menu items */}
+              {otherMenuItems.map((item, index) => {
                 const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
                 if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                   return (
