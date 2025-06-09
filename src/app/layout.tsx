@@ -13,8 +13,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Ladies Headless",
-  description: "A headless WordPress site built with Next.js",
+  title: "Ladies' College - HAEC VICTORIA NOSTRA FIDES 1900",
+  description: "Private school for girls",
 };
 
 export default async function RootLayout({
