@@ -1,4 +1,5 @@
 import { WordPressPost, WordPressPage } from './utils';
+import { WP_API_URL } from '@/config/constants';
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || '';
 
@@ -214,44 +215,25 @@ export async function getPages(): Promise<WordPressPage[]> {
   }
 }
 
-export async function getPage(slug: string): Promise<WordPressPage | null> {
+export async function getPage(slug: string) {
   try {
-    const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=${slug}&acf_format=standard`;
-
-    const response = await fetch(apiUrl, {
-      method: 'GET',
+    const apiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || WP_API_URL;
+    const response = await fetch(`${apiUrl}/wp-json/wp/v2/pages?slug=${slug}&_embed`, {
+      next: { revalidate: 3600 }, // Revalidate every hour
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      next: { revalidate: 3600 },
     });
-    
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Page API Error:', {
-        status: response.status,
-        statusText: response.statusText,
-        url: apiUrl,
-        errorText
-      });
-      throw new Error(`Failed to fetch page: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    
-    const data = await response.json();
-    
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      console.warn(`No page data found for slug: ${slug}`);
+      console.error(`No page data found for slug: ${slug}`);
       return null;
     }
 
-    return data[0];
+    const pages = await response.json();
+    return pages[0] || null;
   } catch (error) {
-    console.error('Error fetching page:', {
-      error,
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined
-    });
+    console.error(`Error fetching page data for ${slug}:`, error);
     return null;
   }
 }
