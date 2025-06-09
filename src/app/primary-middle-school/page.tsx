@@ -86,20 +86,20 @@ export default async function PrimaryMiddleSchoolPage() {
             </div>
           )}
 
+          {/* Gallery */}
+          {acf.gallery && acf.gallery.length > 0 && (
+            <div className="max-w-4xl mx-auto mb-16">
+              <UpperSchoolGallery gallery={acf.gallery} />
+            </div>
+          )}
+
           {/* Second Paragraph */}
           {acf["2nd_paragraph"] && (
-            <div className="max-w-4xl mx-auto mb-16">
+            <div className="max-w-4xl mx-auto">
               <div
                 className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
                 dangerouslySetInnerHTML={{ __html: acf["2nd_paragraph"] }}
               />
-            </div>
-          )}
-
-          {/* Gallery */}
-          {acf.gallery && acf.gallery.length > 0 && (
-            <div className="max-w-4xl mx-auto">
-              <UpperSchoolGallery gallery={acf.gallery} />
             </div>
           )}
         </div>

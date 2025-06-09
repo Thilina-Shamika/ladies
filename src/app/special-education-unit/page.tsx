@@ -4,7 +4,7 @@ import { getPage } from '@/lib/wordpress';
 import UpperSchoolGallery from '@/components/upper-school/UpperSchoolGallery';
 
 interface SpecialEducationUnitACF {
-  sub_heading?: string;
+  subheading?: string;
   heading?: string;
   cover?: {
     url: string;
@@ -34,7 +34,7 @@ export default async function SpecialEducationUnitPage() {
             <Image
               src={acf.cover.url}
               alt={acf.cover.alt || acf.heading || 'Special Education Unit'}
-              className="object-cover object-top w-full h-full"
+              className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
               fill
               priority
@@ -44,7 +44,7 @@ export default async function SpecialEducationUnitPage() {
         </div>
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-12 w-full">
           <div className="text-white text-sm md:text-base font-semibold mb-4 tracking-widest uppercase drop-shadow">
-            {acf.sub_heading ?? 'LEARNING ENVIRONMENTS'}
+            {acf.subheading ?? 'STUDENT SUPPORT'}
           </div>
           <h1 className="text-4xl md:text-7xl text-white mb-8 drop-shadow-lg font-light">
             {acf.heading ?? 'Special Education Unit'}
@@ -86,20 +86,20 @@ export default async function SpecialEducationUnitPage() {
             </div>
           )}
 
+          {/* Gallery */}
+          {acf.gallery && acf.gallery.length > 0 && (
+            <div className="max-w-4xl mx-auto mb-16">
+              <UpperSchoolGallery gallery={acf.gallery} />
+            </div>
+          )}
+
           {/* Second Paragraph */}
           {acf["2nd_paragraph"] && (
-            <div className="max-w-4xl mx-auto mb-16">
+            <div className="max-w-4xl mx-auto">
               <div
                 className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
                 dangerouslySetInnerHTML={{ __html: acf["2nd_paragraph"] }}
               />
-            </div>
-          )}
-
-          {/* Gallery */}
-          {acf.gallery && acf.gallery.length > 0 && (
-            <div className="max-w-4xl mx-auto">
-              <UpperSchoolGallery gallery={acf.gallery} />
             </div>
           )}
         </div>

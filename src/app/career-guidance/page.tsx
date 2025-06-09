@@ -4,22 +4,16 @@ import { getPage } from '@/lib/wordpress';
 import UpperSchoolGallery from '@/components/upper-school/UpperSchoolGallery';
 
 interface CareerGuidanceACF {
-  sub_heading?: string;
+  subheading?: string;
   heading?: string;
   cover?: {
     url: string;
     alt: string;
   };
-  content_subheading?: string;
   content_heading?: string;
   "1st_paragraph"?: string;
   block_quote?: string;
   "2nd_paragraph"?: string;
-  career_guidance_ms_teams?: {
-    url: string;
-    alt: string;
-  };
-  "3rd_paragraph"?: string;
   gallery?: Array<{
     url: string;
     alt: string;
@@ -40,7 +34,7 @@ export default async function CareerGuidancePage() {
             <Image
               src={acf.cover.url}
               alt={acf.cover.alt || acf.heading || 'Career Guidance'}
-              className="object-cover object-top w-full h-full"
+              className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
               fill
               priority
@@ -50,7 +44,7 @@ export default async function CareerGuidancePage() {
         </div>
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-12 w-full">
           <div className="text-white text-sm md:text-base font-semibold mb-4 tracking-widest uppercase drop-shadow">
-            {acf.sub_heading ?? 'LEARNING ENVIRONMENTS'}
+            {acf.subheading ?? 'STUDENT SUPPORT'}
           </div>
           <h1 className="text-4xl md:text-7xl text-white mb-8 drop-shadow-lg font-light">
             {acf.heading ?? 'Career Guidance'}
@@ -62,13 +56,6 @@ export default async function CareerGuidancePage() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           {/* Content Heading */}
-          {acf.content_subheading && (
-            <div className="max-w-4xl mx-auto mb-4">
-              <div className="text-[#9d0202] text-sm md:text-sm font-semibold tracking-widest uppercase">
-                {acf.content_subheading}
-              </div>
-            </div>
-          )}
           {acf.content_heading && (
             <div className="max-w-4xl mx-auto mb-16">
               <h2 className="text-2xl md:text-3xl text-gray-900 font-light leading-tight">
@@ -99,45 +86,20 @@ export default async function CareerGuidancePage() {
             </div>
           )}
 
+          {/* Gallery */}
+          {acf.gallery && acf.gallery.length > 0 && (
+            <div className="max-w-4xl mx-auto mb-16">
+              <UpperSchoolGallery gallery={acf.gallery} />
+            </div>
+          )}
+
           {/* Second Paragraph */}
           {acf["2nd_paragraph"] && (
-            <div className="max-w-4xl mx-auto mb-16">
+            <div className="max-w-4xl mx-auto">
               <div
                 className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
                 dangerouslySetInnerHTML={{ __html: acf["2nd_paragraph"] }}
               />
-            </div>
-          )}
-
-          {/* MS Teams Image */}
-          {acf.career_guidance_ms_teams?.url && (
-            <div className="max-w-4xl mx-auto mb-16">
-              <div className="rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
-                <Image
-                  src={acf.career_guidance_ms_teams.url}
-                  alt={acf.career_guidance_ms_teams.alt || 'Career Guidance MS Teams'}
-                  width={1024}
-                  height={451}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Third Paragraph */}
-          {acf["3rd_paragraph"] && (
-            <div className="max-w-4xl mx-auto mb-16">
-              <div
-                className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
-                dangerouslySetInnerHTML={{ __html: acf["3rd_paragraph"] }}
-              />
-            </div>
-          )}
-
-          {/* Gallery */}
-          {acf.gallery && acf.gallery.length > 0 && (
-            <div className="max-w-4xl mx-auto">
-              <UpperSchoolGallery gallery={acf.gallery} />
             </div>
           )}
         </div>
