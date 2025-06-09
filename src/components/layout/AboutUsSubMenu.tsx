@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface SubMenuItem {
   acf_fc_layout: string;
@@ -48,23 +49,27 @@ const AboutUsSubMenu: React.FC<AboutUsSubMenuProps> = ({ items }) => {
         About Us <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute left-0 mt-2 z-50 min-w-[220px] bg-[#9d0202] text-white rounded-xl shadow-xl py-2 px-2 flex flex-col animate-fade-in">
-          {items && items.length > 0 ? (
-            items.map((item, idx) => (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+          className="absolute top-full left-0 mt-2 w-64 bg-[#9d0101] shadow-lg rounded-lg py-2 z-50"
+        >
+          {items.map((item, index) => {
+            const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+            return (
               <Link
-                key={idx}
-                href={item.page_link.url.replace(/^https?:\/\/[^/]+/, '')}
-                className="block px-4 py-2 rounded-lg hover:bg-white/10 hover:text-yellow-200 transition-colors text-base font-medium"
+                key={index}
+                href={nextHref}
+                className="block px-4 py-2 text-sm text-white hover:bg-[#b30000] transition-colors"
                 onClick={() => setOpen(false)}
-                prefetch={false}
               >
                 {item.page_name}
               </Link>
-            ))
-          ) : (
-            <div className="px-4 py-2 text-white">Loading...</div>
-          )}
-        </div>
+            );
+          })}
+        </motion.div>
       )}
     </div>
   );

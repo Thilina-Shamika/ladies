@@ -7,6 +7,7 @@ import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, 
 import { motion, AnimatePresence } from 'framer-motion';
 import { WordPressHeader, WORDPRESS_API_URL } from '@/lib/wordpress';
 import AboutUsSubMenu from './AboutUsSubMenu';
+import LearningEnvironmentsSubMenu from './LearningEnvironmentsSubMenu';
 
 interface HeaderProps {
   headerData: WordPressHeader | null;
@@ -23,29 +24,34 @@ const socialIcons: Record<string, LucideIcon> = {
 export function Header({ headerData }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [aboutSubMenu, setAboutSubMenu] = useState<any[]>([]);
+  const [learningSubMenu, setLearningSubMenu] = useState<any[]>([]);
 
   useEffect(() => {
-    async function fetchAboutSubMenu() {
+    async function fetchSubMenus() {
       try {
-        const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/about-submenu?per_page=1`);
-        const data = await res.json();
-        console.log('Raw API Response:', data);
-        if (data && data[0]?.acf?.about_submenu) {
-          console.log('Submenu Items:', data[0].acf.about_submenu);
-          setAboutSubMenu(data[0].acf.about_submenu);
-        } else {
-          console.log('No submenu items found in response');
+        // Fetch About Us submenu
+        const aboutRes = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/about-submenu?per_page=1`);
+        const aboutData = await aboutRes.json();
+        if (aboutData && aboutData[0]?.acf?.about_submenu) {
+          setAboutSubMenu(aboutData[0].acf.about_submenu);
+        }
+
+        // Fetch Learning Environments submenu
+        const learningRes = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/learning-submenu?per_page=1`);
+        const learningData = await learningRes.json();
+        if (learningData && learningData[0]?.acf?.learning_environment_submenu) {
+          setLearningSubMenu(learningData[0].acf.learning_environment_submenu);
         }
       } catch (error) {
-        console.error('Error fetching submenu:', error);
+        console.error('Error fetching submenus:', error);
       }
     }
-    fetchAboutSubMenu();
+    fetchSubMenus();
   }, []);
 
-  // Remove About Us from main menu items
+  // Remove About Us and Learning Environments from main menu items
   const mainMenuItems = headerData?.acf.main_menu_items.filter(
-    (item) => item.main_menu_item_name.toLowerCase() !== 'about us'
+    (item) => !['about us', 'learning environments'].includes(item.main_menu_item_name.toLowerCase())
   ) || [];
 
   // Find Home menu item and the rest
@@ -187,6 +193,8 @@ export function Header({ headerData }: HeaderProps) {
               )}
               {/* About Us SubMenu */}
               <AboutUsSubMenu items={aboutSubMenu} />
+              {/* Learning Environments SubMenu */}
+              <LearningEnvironmentsSubMenu items={learningSubMenu} />
               {/* Other menu items */}
               {otherMenuItems.map((item, index) => {
                 const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
