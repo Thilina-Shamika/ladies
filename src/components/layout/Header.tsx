@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { WordPressHeader } from '@/lib/wordpress';
+import { WordPressHeader, WORDPRESS_API_URL } from '@/lib/wordpress';
 import AboutUsSubMenu from './AboutUsSubMenu';
 
 interface HeaderProps {
@@ -27,7 +27,7 @@ export function Header({ headerData }: HeaderProps) {
   useEffect(() => {
     async function fetchAboutSubMenu() {
       try {
-        const res = await fetch('http://ladies.local/wp-json/wp/v2/about-submenu?per_page=1');
+        const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/about-submenu?per_page=1`);
         const data = await res.json();
         console.log('Raw API Response:', data);
         if (data && data[0]?.acf?.about_submenu) {

@@ -1,7 +1,7 @@
 import { WordPressPost, WordPressPage } from './utils';
 import { WP_API_URL } from '@/config/constants';
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || '';
+export const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || WP_API_URL;
 
 interface MenuLink {
   title: string;
@@ -217,9 +217,8 @@ export async function getPages(): Promise<WordPressPage[]> {
 
 export async function getPage(slug: string) {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || WP_API_URL;
-    const response = await fetch(`${apiUrl}/wp-json/wp/v2/pages?slug=${slug}&_embed`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
+    const response = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=${slug}&_embed`, {
+      next: { revalidate: 3600 },
       headers: {
         'Accept': 'application/json',
       },

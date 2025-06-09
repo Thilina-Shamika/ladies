@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { getPage } from '@/lib/wordpress';
+import { getPage, WORDPRESS_API_URL } from '@/lib/wordpress';
 import PrincipalsList from '@/components/home/PrincipalsList';
 
 interface EthosACF {
@@ -20,7 +20,7 @@ export default async function EthosPage() {
   const acf = (pageData?.acf || {}) as EthosACF;
 
   // Fetch principals data
-  const principalsResponse = await fetch('http://ladies.local/wp-json/wp/v2/principal');
+  const principalsResponse = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/principal`);
   const principals = await principalsResponse.json();
 
   return (

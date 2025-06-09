@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { getPage } from '@/lib/wordpress';
+import { getPage, WORDPRESS_API_URL } from '@/lib/wordpress';
 import PastPrincipals from '@/components/home/PastPrincipals';
 
 interface HistoryACF {
@@ -24,7 +24,7 @@ export default async function HistoryPage() {
   const acf = (pageData?.acf || {}) as HistoryACF;
 
   // Fetch principals data
-  const principalsResponse = await fetch('http://ladies.local/wp-json/wp/v2/principal');
+  const principalsResponse = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/principal`);
   const principals = await principalsResponse.json();
 
   return (
