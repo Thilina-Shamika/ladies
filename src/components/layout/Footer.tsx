@@ -1,71 +1,111 @@
-'use client';
-
+import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { Facebook, Instagram, Youtube, Linkedin } from 'lucide-react';
 
-export function Footer() {
+const socialIcons = {
+  facebook: Facebook,
+  instagram: Instagram,
+  youtube: Youtube,
+  linkedin: Linkedin,
+};
+
+async function getFooterData() {
+  const apiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || '';
+  const res = await fetch(`${apiUrl}/wp-json/wp/v2/footer?slug=footer`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data && data.length > 0 ? data[0] : null;
+}
+
+export default async function Footer() {
+  const pageData = await getFooterData();
+  const acf = pageData?.acf;
+  if (!acf) return null;
+
   return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="bg-gray-900 text-white py-12"
-    >
+    <footer className="bg-white border-t border-gray-200 pt-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">About Us</h3>
-            <p className="text-gray-400">
-              Your company description goes here. Make it compelling and informative.
-            </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <div className="flex items-center space-x-4 mb-6 md:mb-0">
+            {acf.logo?.url && (
+              <Image 
+                src={acf.logo.url} 
+                alt={acf.logo.alt || 'Logo'} 
+                width={acf.logo.width || 120} 
+                height={acf.logo.height || 40} 
+                className="h-auto w-auto" 
+                unoptimized
+              />
+            )}
           </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                  Home
+          <div className="flex space-x-4">
+            {acf.social_media?.map((item: any, idx: number) => {
+              const name = item.social_media_name?.toLowerCase();
+              const Icon = socialIcons[name as keyof typeof socialIcons];
+              return (
+                <Link key={idx} href={item.social_media_link} target="_blank" rel="noopener noreferrer">
+                  <span className="sr-only">{item.social_media_name}</span>
+                  {Icon ? <Icon className="w-6 h-6 text-[#9d0101]" /> : <span className="text-2xl text-[#9d0101]">{item.social_media_name[0]}</span>}
                 </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
+              );
+            })}
           </div>
-
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-gray-200 pt-8">
+          {/* Contact Information */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <ul className="space-y-2 text-gray-400">
-              <li>Email: info@example.com</li>
-              <li>Phone: (123) 456-7890</li>
-              <li>Address: Your Address Here</li>
-            </ul>
+            <div className="font-semibold mb-2 text-[#9d0101]">Contact Information</div>
+            <div className="text-gray-700 text-sm whitespace-pre-line mb-2">{acf.address}</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.phone_numnber_1}</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.phone_number_2}</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.principals_email}</div>
           </div>
-
+          {/* Old Girls' Association */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-            <div className="flex space-x-4">
-              {/* Add your social media icons/links here */}
+            <div className="font-semibold mb-2 text-[#9d0101]">Old Girls' Association</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.oga_email}</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.oga_phone}</div>
+            <div className="text-gray-700 text-sm mb-1">
+              <Link href={acf.oga_website || '#'} target="_blank" className="hover:underline text-gray-700">
+                {acf.oga_website?.replace(/^https?:\/\//, '')}
+              </Link>
+            </div>
+          </div>
+          {/* LCIPS */}
+          <div>
+            <div className="font-semibold mb-2 text-[#9d0101]">LCIPS</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.licps_email}</div>
+            <div className="text-gray-700 text-sm mb-1">{acf.licps_phone}</div>
+            <div className="text-gray-700 text-sm mb-1">
+              <Link href={acf.licps || '#'} target="_blank" className="hover:underline text-gray-700">
+                {acf.licps?.replace(/^https?:\/\//, '')}
+              </Link>
+            </div>
+          </div>
+          {/* Resources */}
+          <div>
+            <div className="font-semibold mb-2 text-[#9d0101]">Resources</div>
+            <div className="grid grid-cols-2 gap-x-4">
+              {acf.resources?.map((item: any, idx: number) => {
+                // Convert full URL to path for Next.js routing
+                let href = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+                if (!href.startsWith('/')) href = '/' + href;
+                return (
+                  <Link key={idx} href={href} className="text-gray-700 text-sm mb-1 hover:underline">
+                    {item.page_name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
-
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+        {/* Copyright and Designed By */}
+        <div className="border-t border-gray-200 mt-8 pt-6 pb-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
+          <div>{acf.copyright}</div>
+          <div className="md:text-right">Designed & Developed by <span className="font-semibold"></span></div>
         </div>
       </div>
-    </motion.footer>
+    </footer>
   );
 } 
