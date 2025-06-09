@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon } from 'lucide-react';
+import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WordPressHeader, WORDPRESS_API_URL } from '@/lib/wordpress';
 import AboutUsSubMenu from './AboutUsSubMenu';
@@ -25,6 +25,8 @@ export function Header({ headerData }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [aboutSubMenu, setAboutSubMenu] = useState<any[]>([]);
   const [learningSubMenu, setLearningSubMenu] = useState<any[]>([]);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [learningOpen, setLearningOpen] = useState(false);
 
   useEffect(() => {
     async function fetchSubMenus() {
@@ -151,7 +153,7 @@ export function Header({ headerData }: HeaderProps) {
           ease: [0.6, -0.05, 0.01, 0.99],
           opacity: { duration: 1.5 }
         }}
-        className="bg-white border-b"
+        className="bg-white border-b sticky top-0 z-50 md:static"
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
@@ -255,28 +257,94 @@ export function Header({ headerData }: HeaderProps) {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed top-0 right-0 bottom-0 w-64 bg-white z-50 md:hidden"
+              className="fixed top-0 right-0 bottom-0 w-64 bg-[#9d0101] z-50 md:hidden overflow-y-auto max-h-screen"
             >
               <div className="p-4">
                 <div className="flex justify-end">
                   <button
                     onClick={() => setIsMenuOpen(false)}
-                    className="p-2 hover:text-primary transition-colors"
+                    className="p-2 hover:text-white/80 text-white transition-colors"
                   >
-                    <X className="w-6 h-6 text-[#000000]" />
+                    <X className="w-6 h-6 text-white" />
                   </button>
                 </div>
 
                 <nav className="mt-8 space-y-4">
-                  {headerData?.acf.main_menu_items.map((item, index) => {
-                    // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
-                    const nextHref = item.main_menu_item_link?.url?.replace(/^https?:\/\/[^/]+/, '') || '#';
+                  {/* Home menu item */}
+                  {homeMenuItem && (
+                    <Link
+                      href={homeMenuItem.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '')}
+                      className="block py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                      prefetch={false}
+                    >
+                      {homeMenuItem.main_menu_item_name}
+                    </Link>
+                  )}
+
+                  {/* About Us Submenu (Dropdown) */}
+                  {aboutSubMenu.length > 0 && (
+                    <div>
+                      <button
+                        className="flex items-center w-full py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
+                        onClick={() => setAboutOpen((v) => !v)}
+                        aria-expanded={aboutOpen}
+                      >
+                        About Us
+                        <ChevronDown className={`ml-2 w-4 h-4 transition-transform ${aboutOpen ? 'rotate-180' : ''} text-white`} />
+                      </button>
+                      {aboutOpen && aboutSubMenu.map((item, idx) => {
+                        const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+                        return (
+                          <Link
+                            key={idx}
+                            href={nextHref}
+                            className="block py-2 pl-6 text-white text-xs uppercase hover:text-white/80 transition-colors"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {item.page_name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* Learning Environments Submenu (Dropdown) */}
+                  {learningSubMenu.length > 0 && (
+                    <div>
+                      <button
+                        className="flex items-center w-full py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
+                        onClick={() => setLearningOpen((v) => !v)}
+                        aria-expanded={learningOpen}
+                      >
+                        Learning Environments
+                        <ChevronDown className={`ml-2 w-4 h-4 transition-transform ${learningOpen ? 'rotate-180' : ''} text-white`} />
+                      </button>
+                      {learningOpen && learningSubMenu.map((item, idx) => {
+                        const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+                        return (
+                          <Link
+                            key={idx}
+                            href={nextHref}
+                            className="block py-2 pl-6 text-white text-xs uppercase hover:text-white/80 transition-colors"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {item.page_name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* Other main menu items */}
+                  {otherMenuItems.map((item, index) => {
+                    const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
                     if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                       return (
                         <a
                           key={index}
                           href={nextHref}
-                          className="block py-2 text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                          className="block py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {item.main_menu_item_name}
@@ -287,7 +355,7 @@ export function Header({ headerData }: HeaderProps) {
                       <Link
                         key={index}
                         href={nextHref}
-                        className="block py-2 text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                        className="block py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                         prefetch={false}
                       >
