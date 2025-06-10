@@ -2,8 +2,6 @@ import React from 'react';
 import Image from 'next/image';
 import { getPage } from '@/lib/wordpress';
 import History from '@/components/home/History';
-import VisionMission from '@/components/home/VisionMission';
-import Values from '@/components/home/Values';
 import { PrincipalMessage } from '@/components/home/PrincipalMessage';
 import AboutUs from '@/components/home/AboutUs';
 
@@ -88,19 +86,6 @@ export default async function AboutPage() {
         imageAlt={aboutAcf.history_image?.alt ?? ''}
         image2Url={aboutAcf.history_image2?.url ?? ''}
         image2Alt={aboutAcf.history_image2?.alt ?? ''}
-      />
-      {/* Vision & Mission Section */}
-      <VisionMission
-        mission={aboutAcf.mission ?? ''}
-        vision={aboutAcf.vision ?? ''}
-        missionLabel="Our Mission"
-        visionLabel="Our Vision"
-      />
-      {/* Values Section */}
-      <Values
-        subheading={aboutAcf.our_values_sub_heading ?? ''}
-        heading={aboutAcf.our_values_heading ?? ''}
-        content={aboutAcf.our_values ?? ''}
       />
       {/* Principal's Message Section */}
       <PrincipalMessage
