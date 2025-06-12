@@ -10,11 +10,21 @@ interface SchoolHymnACF {
     alt: string;
   } | null;
   school_hymn?: string | null;
+  hymn_video?: string | null;
 }
 
 export default async function SchoolHymnPage() {
   const pageData = await getPage('school-hymn');
   const acf = (pageData?.acf || {}) as SchoolHymnACF;
+
+  // Extract YouTube video ID from URL
+  const getYouTubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const videoId = acf.hymn_video ? getYouTubeId(acf.hymn_video) : null;
 
   return (
     <main className="pb-8">
@@ -60,6 +70,26 @@ export default async function SchoolHymnPage() {
           </div>
         </div>
       </section>
+
+      {/* Video Section */}
+      {videoId && (
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl md:text-3xl text-[#9d0202] text-center mb-8">School Hymn Video</h2>
+              <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden shadow-xl">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  title="School Hymn Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 } 
