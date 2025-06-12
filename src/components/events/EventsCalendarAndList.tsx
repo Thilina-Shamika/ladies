@@ -78,15 +78,36 @@ export default function EventsCalendarAndList() {
 
   // Only filter the list below by search and date
   const filteredEvents = useMemo(() => {
-    return events.filter((event) => {
-      const nameMatch = event.acf.event_name.toLowerCase().includes(search.toLowerCase());
-      let dateMatch = true;
-      if (dateFilter) {
-        const eventDate = parseEventDate(event.acf.event_start_date);
-        dateMatch = !!eventDate && eventDate === dateFilter;
-      }
-      return nameMatch && dateMatch;
-    });
+    const today = new Date();
+    return events
+      .filter((event) => {
+        const nameMatch = event.acf.event_name.toLowerCase().includes(search.toLowerCase());
+        let dateMatch = true;
+        if (dateFilter) {
+          const eventDate = parseEventDate(event.acf.event_start_date);
+          dateMatch = !!eventDate && eventDate === dateFilter;
+        }
+        return nameMatch && dateMatch;
+      })
+      .sort((a, b) => {
+        const dateA = parseEventDate(a.acf.event_start_date);
+        const dateB = parseEventDate(b.acf.event_start_date);
+        if (!dateA || !dateB) return 0;
+
+        const eventDateA = new Date(dateA);
+        const eventDateB = new Date(dateB);
+
+        // If both dates are in the future, sort by closest date first
+        if (eventDateA >= today && eventDateB >= today) {
+          return eventDateA.getTime() - eventDateB.getTime();
+        }
+        // If both dates are in the past, sort by most recent first
+        if (eventDateA < today && eventDateB < today) {
+          return eventDateB.getTime() - eventDateA.getTime();
+        }
+        // If one is past and one is future, future dates come first
+        return eventDateA >= today ? -1 : 1;
+      });
   }, [events, search, dateFilter]);
 
   // Add this new function after the existing useMemo hooks
