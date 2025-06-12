@@ -2,7 +2,6 @@ import React from 'react';
 import Image from 'next/image';
 import { getPage } from '@/lib/wordpress';
 import History from '@/components/home/History';
-import { PrincipalMessage } from '@/components/home/PrincipalMessage';
 import AboutUs from '@/components/home/AboutUs';
 
 interface AboutACF {
@@ -21,17 +20,10 @@ interface AboutACF {
   our_values_sub_heading?: string;
   our_values_heading?: string;
   our_values?: string;
+  pillars_of_success?: { url: string; alt: string };
 }
 
 interface HomeACF {
-  principal?: { url: string; alt: string } | string;
-  principals_name?: string;
-  designation_or_qualifications?: string;
-  principals_message_subheading?: string;
-  principals_message_heading?: string;
-  principals_message?: string;
-  principals_section_button_text?: string;
-  principals_section_button_link?: { url?: string };
   about_us_subhaeding?: string;
   about_heading?: string;
   about_description?: string;
@@ -87,28 +79,6 @@ export default async function AboutPage() {
         image2Url={aboutAcf.history_image2?.url ?? ''}
         image2Alt={aboutAcf.history_image2?.alt ?? ''}
       />
-      {/* Principal's Message Section */}
-      <PrincipalMessage
-        image={
-          typeof homeAcf.principal === 'string'
-            ? { url: homeAcf.principal, alt: homeAcf.principals_name || '' }
-            : homeAcf.principal && homeAcf.principal.url
-              ? { url: homeAcf.principal.url, alt: homeAcf.principal.alt || homeAcf.principals_name || '' }
-              : { url: '', alt: '' }
-        }
-        name={homeAcf.principals_name || ''}
-        designation={homeAcf.designation_or_qualifications || ''}
-        subheading={homeAcf.principals_message_subheading || ''}
-        heading={homeAcf.principals_message_heading || ''}
-        message={homeAcf.principals_message || ''}
-        buttonText={homeAcf.principals_section_button_text || ''}
-        buttonLink={
-          homeAcf.principals_section_button_link && homeAcf.principals_section_button_link.url
-            ? { url: homeAcf.principals_section_button_link.url }
-            : undefined
-        }
-        anniversaryImage={homeAcf["125_years"]}
-      />
       {/* About Us Section from home page */}
       <AboutUs
         subheading={homeAcf.about_us_subhaeding ?? ''}
@@ -122,6 +92,40 @@ export default async function AboutPage() {
         image2Alt={homeAcf.about_image2?.alt ?? ''}
         backgroundImageUrl={homeAcf.about_background_image?.url ?? ''}
       />
+      {/* Pillars of Success Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-sm md:text-sm text-gray-600 mb-3 tracking-widest uppercase">
+              {aboutAcf.our_values_sub_heading ?? ''}
+            </div>
+            <h2 className="text-3xl md:text-5xl text-gray-900">
+              {aboutAcf.our_values_heading ?? ''}
+            </h2>
+          </div>
+          
+          {/* Pillars Image */}
+          {aboutAcf.pillars_of_success?.url && (
+            <div className="flex justify-center mb-6">
+              <div className="relative w-full max-w-4xl aspect-[16/9] rounded-xl overflow-hidden">
+                <Image
+                  src={aboutAcf.pillars_of_success.url}
+                  alt={aboutAcf.pillars_of_success.alt || 'Pillars of Success'}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Our Values Content */}
+          {aboutAcf.our_values && (
+            <div className="max-w-4xl text-sm text-center mx-auto text-black prose prose-lg prose-p:text-center">
+              <div dangerouslySetInnerHTML={{ __html: aboutAcf.our_values }} />
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 } 

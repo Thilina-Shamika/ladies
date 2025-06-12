@@ -2,6 +2,7 @@ import React from 'react';
 import { LeftImageRightContent } from '@/components/home/LeftImageRightContent';
 import Image from 'next/image';
 import { getPage } from '@/lib/wordpress';
+import Schooling from '@/components/home/Schooling';
 
 interface LearningEnvironmentsACF {
   learning_cover?: {
@@ -18,11 +19,26 @@ interface IntroductionACF {
   content?: string;
 }
 
+interface HomeACF {
+  schooling_sub_heading?: string;
+  schooling_heading?: string;
+  curriculum?: {
+    acf_fc_layout: string;
+    curriculum_image: { url: string; alt: string };
+    curriculum_heading: string;
+    curriculum_sub_heading?: string;
+    curriculum_link: { title: string; url: string; target?: string };
+  }[];
+}
+
 export default async function LearningEnvironmentsPage() {
   const pageData = await getPage('learning-environments');
   const acf = (pageData?.acf || {}) as LearningEnvironmentsACF;
   const introPageData = await getPage('introduction');
   const introAcf = (introPageData?.acf || {}) as IntroductionACF;
+  const homePageData = await getPage('home');
+  const homeAcf = (homePageData?.acf || {}) as HomeACF;
+
   return (
     <main className="pb-8">
       {/* Cover Section */}
@@ -56,6 +72,14 @@ export default async function LearningEnvironmentsPage() {
         subheading={introAcf.learning_sub_heading || ''}
         content={introAcf.content || ''}
       />
+      {/* Schooling Section */}
+      {homeAcf.curriculum && (
+        <Schooling
+          schooling_sub_heading={homeAcf.schooling_sub_heading ?? ''}
+          schooling_heading={homeAcf.schooling_heading ?? ''}
+          curriculum={homeAcf.curriculum}
+        />
+      )}
     </main>
   );
 } 
