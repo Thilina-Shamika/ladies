@@ -96,23 +96,26 @@ export function Header({ headerData }: HeaderProps) {
               {/* Top Bar Menu */}
               <div className="hidden md:flex items-center space-x-4">
                 {headerData?.acf.top_bar_menu.map((item, index) => {
-                  // Convert WordPress absolute URLs to relative paths for Next.js Link (SSR-safe)
-                  const nextHref = item.item_link.url.replace(/^https?:\/\/[^/]+/, '');
-                  if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                  const url = item.item_link.url;
+                  // Handle external URLs and special protocols
+                  if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:')) {
                     return (
                       <a
                         key={index}
-                        href={nextHref}
+                        href={url}
                         className="text-[12px] hover:text-white/80 transition-colors"
+                        target={url.startsWith('http') ? '_blank' : undefined}
+                        rel={url.startsWith('http') ? 'noopener noreferrer' : undefined}
                       >
                         {item.item_name}
                       </a>
                     );
                   }
+                  // Handle internal URLs
                   return (
                     <Link
                       key={index}
-                      href={nextHref}
+                      href={url.replace(/^https?:\/\/[^/]+/, '')}
                       className="text-[12px] hover:text-white/80 transition-colors"
                       prefetch={false}
                     >
