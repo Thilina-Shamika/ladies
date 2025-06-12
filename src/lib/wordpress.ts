@@ -379,4 +379,23 @@ export async function getCategoriesByIds(ids: number[]): Promise<{ id: number; n
   });
   if (!response.ok) return [];
   return response.json();
+}
+
+export async function getPrincipal(slug: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/wp-json/wp/v2/principal?slug=${slug}`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch principal');
+    }
+
+    const data = await response.json();
+    return data[0] || null;
+  } catch (error) {
+    console.error('Error fetching principal:', error);
+    return null;
+  }
 } 
