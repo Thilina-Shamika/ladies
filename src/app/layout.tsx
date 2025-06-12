@@ -5,7 +5,6 @@ import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { getHeader } from "@/lib/wordpress";
 import "yet-another-react-lightbox/styles.css";
-import { redirect } from 'next/navigation';
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -23,15 +22,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Check for maintenance mode
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
-  
-  // If maintenance mode is enabled and we're not already on the maintenance page,
-  // redirect to the maintenance page
-  if (isMaintenanceMode && typeof children === 'object' && children !== null && !children.toString().includes('maintenance')) {
-    redirect('/maintenance');
-  }
-
   let headerData = null;
   
   // Check if WordPress API URL is configured
