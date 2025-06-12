@@ -97,6 +97,19 @@ export function Header({ headerData }: HeaderProps) {
               <div className="hidden md:flex items-center space-x-4">
                 {headerData?.acf.top_bar_menu.map((item, index) => {
                   const url = item.item_link.url;
+                  // Special handling for 125 years link
+                  if (item.item_name.toLowerCase().includes('125 years')) {
+                    return (
+                      <Link
+                        key={index}
+                        href="/125-years"
+                        className="text-[12px] hover:text-white/80 transition-colors"
+                        prefetch={false}
+                      >
+                        {item.item_name}
+                      </Link>
+                    );
+                  }
                   // Handle external URLs and special protocols
                   if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:')) {
                     return (
