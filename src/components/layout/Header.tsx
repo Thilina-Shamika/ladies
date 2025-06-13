@@ -110,6 +110,20 @@ export function Header({ headerData }: HeaderProps) {
                       </Link>
                     );
                   }
+                  // Special handling for Parents Resources link
+                  if (item.item_name.toLowerCase().includes('parents resources')) {
+                    const nextjsUrl = url.replace('https://kal.cse.mybluehost.me', '');
+                    return (
+                      <Link
+                        key={index}
+                        href={nextjsUrl}
+                        className="text-[12px] hover:text-white/80 transition-colors"
+                        prefetch={false}
+                      >
+                        {item.item_name}
+                      </Link>
+                    );
+                  }
                   // Handle external URLs and special protocols
                   if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:')) {
                     return (
