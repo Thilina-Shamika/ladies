@@ -398,4 +398,27 @@ export async function getPrincipal(slug: string) {
     console.error('Error fetching principal:', error);
     return null;
   }
+}
+
+export async function getFavicon() {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_API_URL}/wp-json/wp/v2/add-logofavicon?slug=favicon`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch favicon data');
+    }
+
+    const data = await response.json();
+    if (!data || data.length === 0) {
+      return null;
+    }
+
+    return data[0].acf.ladiescollege_favicon;
+  } catch (error) {
+    console.error('Error fetching favicon:', error);
+    return null;
+  }
 } 
