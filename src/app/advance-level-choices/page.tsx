@@ -50,6 +50,7 @@ interface AdvanceLevelChoicesACF {
   vocational_title?: string;
   vocational_link?: PDFFile;
   "1st_paragraph"?: string;
+  al_choices?: PDFFile;
 }
 
 export default async function AdvanceLevelChoicesPage() {
@@ -93,6 +94,25 @@ export default async function AdvanceLevelChoicesPage() {
                 className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
                 dangerouslySetInnerHTML={{ __html: acf["1st_paragraph"] }}
               />
+            </div>
+          )}
+
+          {/* Advance Level Choices Heading */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <h2 className="text-2xl md:text-3xl text-[#9d0202] font-bold text-center mb-8">Advance Level Choices</h2>
+          </div>
+
+          {/* AL Choices PDF Button */}
+          {acf.al_choices?.url && (
+            <div className="max-w-4xl mx-auto mb-8 flex justify-center">
+              <Link
+                href={acf.al_choices.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                View AL Choices
+              </Link>
             </div>
           )}
 
