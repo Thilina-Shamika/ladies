@@ -158,10 +158,10 @@ export default function EventsCalendarAndList() {
               <Link
                 key={event.id}
                 href={`/events/${event.slug}`}
-                className="bg-white rounded-xl shadow flex flex-col md:flex-row items-center p-4 gap-4 hover:shadow-lg transition cursor-pointer no-underline"
+                className="bg-white rounded-xl shadow flex flex-row items-center p-4 gap-4 hover:shadow-lg transition cursor-pointer no-underline"
               >
-                {event.acf.event_image?.url && (
-                  <div className="w-full md:w-40 h-32 relative rounded-lg overflow-hidden">
+                {event.acf.event_image?.url ? (
+                  <div className="w-24 md:w-40 h-24 md:h-32 relative rounded-lg overflow-hidden flex-shrink-0">
                     <Image
                       src={event.acf.event_image.url}
                       alt={event.acf.event_name}
@@ -169,8 +169,10 @@ export default function EventsCalendarAndList() {
                       className="object-cover object-center"
                     />
                   </div>
+                ) : (
+                  <div className="w-24 md:w-40 h-24 md:h-32 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0" />
                 )}
-                <div className="flex-1 flex flex-col gap-2">
+                <div className="flex-1 flex flex-col gap-2 items-start text-left">
                   <div className="flex flex-wrap gap-4 text-xs text-gray-700 items-center">
                     <span>📅 {event.acf.event_start_date} {event.acf.event_start_time && `| ${event.acf.event_start_time}`}</span>
                     {event.acf.event_end_date && (
@@ -183,7 +185,7 @@ export default function EventsCalendarAndList() {
                   </div>
                   <div className="text-gray-700 text-sm line-clamp-2" dangerouslySetInnerHTML={{ __html: event.acf.event_description }} />
                 </div>
-                <div className="flex flex-col items-end gap-2 min-w-[120px]">
+                <div className="flex flex-col items-end gap-2 min-w-[100px] md:min-w-[120px]">
                   {event.acf.event_link?.url && (
                     <a
                       href={event.acf.event_link.url}

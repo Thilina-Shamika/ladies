@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { getPage } from '@/lib/wordpress';
 
 interface PDFFile {
@@ -48,6 +49,7 @@ interface AdvanceLevelChoicesACF {
   local_al_result_analysis?: LocalALResultAnalysis[];
   vocational_title?: string;
   vocational_link?: PDFFile;
+  "1st_paragraph"?: string;
 }
 
 export default async function AdvanceLevelChoicesPage() {
@@ -57,7 +59,7 @@ export default async function AdvanceLevelChoicesPage() {
   return (
     <main className="pb-8">
       {/* Cover Section */}
-      <section className="relative min-h-[55vh] flex items-center justify-center bg-gray-900">
+      <section className="relative min-h-[40vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover?.url && (
             <Image
@@ -83,147 +85,30 @@ export default async function AdvanceLevelChoicesPage() {
 
       {/* Content Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 max-w-4xl">
-          {/* British Advanced Level */}
-          <div className="mb-20">
-            <h2 className="text-3xl font-bold text-[#9d0202] mb-8 border-b border-gray-200 pb-2">British Advanced Level</h2>
-            {/* Application Form */}
-            {acf.application_form_link && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Application Form</h3>
-                <a
-                  href={acf.application_form_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#9d0202] hover:underline text-base font-medium"
-                >
-                  Application - British Advanced Level
-                </a>
-              </div>
-            )}
-            {/* Prospectus */}
-            {(Array.isArray(acf.prospectus) && acf.prospectus.length > 0) && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Prospectus</h3>
-                <ul className="list-none pl-0">
-                  {acf.prospectus.map((item, idx) => (
-                    <li key={idx} className="mb-2">
-                      <a
-                        href={item.prospectus_link?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#9d0202] hover:underline text-base font-medium"
-                      >
-                        {item.prospectus_title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {/* Result Analysis - British AL */}
-            {(Array.isArray(acf.al_result_analysis) && acf.al_result_analysis.length > 0) && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Result Analysis</h3>
-                <ul className="list-none pl-0">
-                  {acf.al_result_analysis.map((item, idx) => (
-                    <li key={idx} className="mb-2">
-                      <a
-                        href={item.al_analysis_pdf_file?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#9d0202] hover:underline text-base font-medium"
-                      >
-                        {item.al_analysis_title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+        <div className="container mx-auto px-4">
+          {/* First Paragraph */}
+          {acf["1st_paragraph"] && (
+            <div className="max-w-4xl mx-auto mb-16">
+              <div
+                className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
+                dangerouslySetInnerHTML={{ __html: acf["1st_paragraph"] }}
+              />
+            </div>
+          )}
 
-          {/* Business and Technology Education Council */}
-          <div className="mb-20">
-            <h2 className="text-3xl font-bold text-[#9d0202] mb-8 border-b border-gray-200 pb-2">Business and Technology Education Council</h2>
-            {/* BTEC Prospectus */}
-            {(Array.isArray(acf.btec_prospectus) && acf.btec_prospectus.length > 0) && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Prospectus</h3>
-                <ul className="list-none pl-0">
-                  {acf.btec_prospectus.map((item, idx) => (
-                    <li key={idx} className="mb-2">
-                      <a
-                        href={item.upload_prospectus_title?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#9d0202] hover:underline text-base font-medium"
-                      >
-                        {item.btec_prospectus_title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Local GCE Advanced Level */}
-          <div className="mb-20">
-            <h2 className="text-3xl font-bold text-[#9d0202] mb-8 border-b border-gray-200 pb-2">Local GCE Advanced Level</h2>
-            {/* Selection of Subjects */}
-            {acf["selection_of_subjects_-_year"] && acf.selection_file?.url && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Selection of Subjects</h3>
-                <a
-                  href={acf.selection_file.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#9d0202] hover:underline text-base font-medium"
-                >
-                  {acf["selection_of_subjects_-_year"]}
-                </a>
-              </div>
-            )}
-            {/* Result Analysis - Local AL */}
-            {(Array.isArray(acf.local_al_result_analysis) && acf.local_al_result_analysis.length > 0) && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Results Analysis</h3>
-                <ul className="list-none pl-0">
-                  {acf.local_al_result_analysis.map((item, idx) => (
-                    <li key={idx} className="mb-2">
-                      <a
-                        href={item.local_al_analysis_file?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#9d0202] hover:underline text-base font-medium"
-                      >
-                        {item.local_al_analysis_title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Vocational Learning */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-[#9d0202] mb-8 border-b border-gray-200 pb-2">Vocational Learning</h2>
-            {acf.vocational_title && acf.vocational_link?.url && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Vocational Curriculum</h3>
-                <a
-                  href={acf.vocational_link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#9d0202] hover:underline text-base font-medium"
-                >
-                  {acf.vocational_title}
-                </a>
-              </div>
-            )}
-          </div>
+          {/* Application Link Button */}
+          {acf.application_link && (
+            <div className="max-w-4xl mx-auto mb-16 flex justify-center">
+              <Link
+                href={acf.application_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                Apply Now
+              </Link>
+            </div>
+          )}
         </div>
       </section>
     </main>
