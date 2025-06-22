@@ -51,6 +51,7 @@ interface AdvanceLevelChoicesACF {
   vocational_link?: PDFFile;
   "1st_paragraph"?: string;
   al_choices?: PDFFile;
+  local_ol_choices?: PDFFile;
 }
 
 export default async function AdvanceLevelChoicesPage() {
@@ -103,16 +104,28 @@ export default async function AdvanceLevelChoicesPage() {
           </div>
 
           {/* AL Choices PDF Button */}
-          {acf.al_choices?.url && (
-            <div className="max-w-4xl mx-auto mb-8 flex justify-center">
-              <Link
-                href={acf.al_choices.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
-              >
-                View AL Choices
-              </Link>
+          {(acf.al_choices?.url || acf.local_ol_choices?.url) && (
+            <div className="max-w-4xl mx-auto mb-8 flex flex-wrap justify-center gap-4">
+              {acf.al_choices?.url && (
+                <Link
+                  href={acf.al_choices.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+                >
+                  View AL Choices
+                </Link>
+              )}
+              {acf.local_ol_choices?.url && (
+                <Link
+                  href={acf.local_ol_choices.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+                >
+                  Local A/L Choices
+                </Link>
+              )}
             </div>
           )}
 
