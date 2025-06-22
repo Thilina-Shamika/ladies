@@ -9,15 +9,6 @@ interface GalleryImage {
   title?: string;
 }
 
-interface ResultAnalysis {
-  acf_fc_layout: string;
-  heading: string;
-  upload_your_pdf_file_here?: {
-    url: string;
-    title?: string;
-  };
-}
-
 interface UpperSchoolACF {
   sub_heading?: string;
   heading?: string;
@@ -28,7 +19,6 @@ interface UpperSchoolACF {
   content_heading?: string;
   '1st_paragraph'?: string;
   gallery?: GalleryImage[];
-  result_analysis?: ResultAnalysis[];
 }
 
 export default async function UpperSchoolPage() {
@@ -81,27 +71,6 @@ export default async function UpperSchoolPage() {
                 className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
                 dangerouslySetInnerHTML={{ __html: acf['1st_paragraph'] }}
               />
-            </div>
-          )}
-
-          {/* Result Analysis */}
-          {Array.isArray(acf.result_analysis) && acf.result_analysis.length > 0 && (
-            <div className="mb-16 space-y-8">
-              {acf.result_analysis.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between bg-white shadow-lg rounded-lg p-6">
-                  <div className="text-lg font-semibold text-gray-900">{item.heading}</div>
-                  {item.upload_your_pdf_file_here?.url && (
-                    <a
-                      href={item.upload_your_pdf_file_here.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ml-4 px-4 py-2 bg-[#9d0202] text-white rounded hover:bg-[#7a0101] transition"
-                    >
-                      View PDF
-                    </a>
-                  )}
-                </div>
-              ))}
             </div>
           )}
 
