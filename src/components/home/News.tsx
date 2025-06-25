@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { getPosts } from '@/lib/wordpress';
 
@@ -61,7 +61,7 @@ const News: React.FC = () => {
                 <div key={post.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200 group">
                   <Link href={nextHref} className="block w-full h-full relative">
                     {featured && (
-                      <Image
+                      <SafeImage
                         src={featured.source_url}
                         alt={featured.alt_text || post.title.rendered}
                         fill

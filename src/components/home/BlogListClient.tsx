@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
+import SafeImage from '@/components/ui/SafeImage';
 import { motion } from 'framer-motion';
 import { WordPressPost } from '@/lib/utils';
 
@@ -31,7 +31,7 @@ export function BlogListClient({ posts, currentPage }: BlogListClientProps) {
           >
             {post._embedded?.['wp:featuredmedia']?.[0] && (
               <div className="aspect-video relative">
-                <Image
+                <SafeImage
                   src={post._embedded['wp:featuredmedia'][0].source_url}
                   alt={post._embedded['wp:featuredmedia'][0].alt_text}
                   fill
@@ -62,23 +62,28 @@ export function BlogListClient({ posts, currentPage }: BlogListClientProps) {
       </div>
 
       {/* Pagination */}
-      <div className="mt-12 flex justify-center gap-4">
-        {currentPage > 1 && (
-          <Link
-            href={`/blog?page=${currentPage - 1}`}
-            className="px-4 py-2 border rounded hover:bg-gray-100 transition-colors"
-          >
-            Previous
-          </Link>
-        )}
-        {posts.length === 9 && (
-          <Link
-            href={`/blog?page=${currentPage + 1}`}
-            className="px-4 py-2 border rounded hover:bg-gray-100 transition-colors"
-          >
-            Next
-          </Link>
-        )}
+      <div className="mt-12 flex justify-center">
+        <div className="flex space-x-2">
+          {currentPage > 1 && (
+            <Link
+              href={`/blog?page=${currentPage - 1}`}
+              className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+            >
+              Previous
+            </Link>
+          )}
+          <span className="px-4 py-2 bg-gray-200 rounded">
+            Page {currentPage}
+          </span>
+          {posts.length === 9 && (
+            <Link
+              href={`/blog?page=${currentPage + 1}`}
+              className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+            >
+              Next
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import SafeImage from '@/components/ui/SafeImage';
 import { motion } from 'framer-motion';
 import { WordPressPost } from '@/lib/utils';
 
@@ -18,7 +18,7 @@ export function BlogPostClient({ post, featuredImage }: BlogPostClientProps) {
       >
         {featuredImage && (
           <div className="aspect-video relative mb-8 rounded-lg overflow-hidden">
-            <Image
+            <SafeImage
               src={featuredImage.source_url}
               alt={featuredImage.alt_text}
               fill

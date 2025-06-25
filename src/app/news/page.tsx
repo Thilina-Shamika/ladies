@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import SafeImage from '@/components/ui/SafeImage';
 import Blog from '@/components/home/Blog';
 import { getPage } from '@/lib/wordpress';
 
@@ -21,7 +21,7 @@ export default async function NewsPage() {
         {/* Background image */}
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.news_image?.url && (
-            <Image
+            <SafeImage
               src={acf.news_image.url}
               alt={acf.news_image.alt || acf.news_heading || ''}
               fill

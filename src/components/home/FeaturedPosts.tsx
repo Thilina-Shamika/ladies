@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import SafeImage from '@/components/ui/SafeImage';
 import { motion } from 'framer-motion';
 import { WordPressPost } from '@/lib/utils';
 
@@ -24,7 +24,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
           >
             {post._embedded?.['wp:featuredmedia']?.[0] && (
               <div className="aspect-video relative">
-                <Image
+                <SafeImage
                   src={post._embedded['wp:featuredmedia'][0].source_url}
                   alt={post._embedded['wp:featuredmedia'][0].alt_text}
                   fill

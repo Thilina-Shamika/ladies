@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import SafeImage from '@/components/ui/SafeImage';
 import Link from 'next/link';
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
@@ -57,7 +57,7 @@ export default async function AnnualReportsPage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.reports_cover?.url && (
-            <Image
+            <SafeImage
               src={acf.reports_cover.url}
               alt={acf.reports_heading || 'Annual Reports'}
               className="object-cover object-center w-full h-full"
@@ -91,7 +91,7 @@ export default async function AnnualReportsPage() {
                   <div key={post.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200 group">
                     <Link href={nextHref} className="block w-full h-full relative">
                       {featured && (
-                        <Image
+                        <SafeImage
                           src={featured.source_url}
                           alt={featured.alt_text || post.title.rendered}
                           fill

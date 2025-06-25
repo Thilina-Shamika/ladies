@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 
 const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
@@ -117,7 +117,7 @@ export default function Blog() {
                 className="block group relative aspect-video rounded-xl overflow-hidden shadow border border-gray-200 hover:shadow-lg transition-all"
               >
                 {featured && (
-                  <Image
+                  <SafeImage
                     src={featured.source_url}
                     alt={featured.alt_text || post.title.rendered}
                     fill
@@ -165,7 +165,7 @@ export default function Blog() {
               return (
                 <li key={post.id} className="flex items-center gap-3">
                   {featured && (
-                    <Image
+                    <SafeImage
                       src={featured.source_url}
                       alt={featured.alt_text || post.title.rendered}
                       width={56}
