@@ -1,6 +1,6 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import SafeImage from '@/components/ui/SafeImage';
 
 interface Principal {
   id: number;
@@ -46,33 +46,32 @@ const PrincipalsList: React.FC<PrincipalsListProps> = ({ principals }) => {
               <div className="w-full md:w-64 flex-shrink-0 mb-4 md:mb-0 md:mr-8">
                 <div className="relative w-full aspect-[4/3.5] rounded-xl overflow-hidden">
                   {principal.acf.past_principal_image?.url && (
-                    <Image
+                    <SafeImage
                       src={principal.acf.past_principal_image.url}
                       alt={principal.acf.past_principal_image.alt || principal.title.rendered}
+                      className="object-cover object-top w-full h-full group-hover:scale-105 transition-transform duration-300"
                       fill
-                      className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
                     />
                   )}
                 </div>
               </div>
               {/* Content */}
-              <div className="flex-1 flex flex-col justify-center md:items-start items-center text-center md:text-left">
-                {/* Term in red */}
-                <div className="text-[#9d0202] text-base font-semibold mb-1">
-                  {principal.acf.term}
-                </div>
-                {/* Name */}
-                <h3 className="text-2xl md:text-3xl font-extrabold text-[#232b3b] mb-1 group-hover:text-[#9d0202] transition-colors duration-300">
+              <div className="flex-1">
+                <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2 group-hover:text-[#9d0202] transition-colors duration-300">
                   {principal.title.rendered}
                 </h3>
-                {/* Country */}
-                <div className="text-sm text-gray-600 mb-2">
+                <div className="text-[#9d0202] text-sm font-semibold mb-3">
+                  {principal.acf.term}
+                </div>
+                <div className="text-gray-600 text-sm mb-3">
                   Country: {principal.acf.country}
                 </div>
-                {/* Description, max 40 words */}
-                <div className="text-sm text-[#232b3b] font-normal">
-                  {getShortText(principal.acf.short_description_about_principal, 40)}
-                </div>
+                {principal.acf.short_description_about_principal && (
+                  <div 
+                    className="text-gray-700 text-sm leading-relaxed line-clamp-3"
+                    dangerouslySetInnerHTML={{ __html: principal.acf.short_description_about_principal }}
+                  />
+                )}
               </div>
             </div>
           </Link>

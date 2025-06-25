@@ -1,6 +1,6 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import SafeImage from '@/components/ui/SafeImage';
 
 interface Principal {
   id: number;
@@ -37,11 +37,11 @@ const PastPrincipals: React.FC<PastPrincipalsProps> = ({ principals }) => {
               <div className="flex flex-col items-center">
                 <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                   {principal.acf.past_principal_image?.url && (
-                    <Image
+                    <SafeImage
                       src={principal.acf.past_principal_image.url}
                       alt={principal.acf.past_principal_image.alt || principal.title.rendered}
+                      className="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300"
                       fill
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
                     />
                   )}
                 </div>

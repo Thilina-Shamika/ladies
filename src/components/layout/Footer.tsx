@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Facebook, Instagram, Youtube, Linkedin } from 'lucide-react';
+import SafeImage from '@/components/ui/SafeImage';
 
 const socialIcons = {
   facebook: Facebook,
@@ -29,13 +29,12 @@ export default async function Footer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div className="flex items-center space-x-4 mb-6 md:mb-0">
             {acf.logo?.url && (
-              <Image 
+              <SafeImage 
                 src={acf.logo.url} 
                 alt={acf.logo.alt || 'Logo'} 
                 width={acf.logo.width || 120} 
                 height={acf.logo.height || 40} 
                 className="h-auto w-auto" 
-                unoptimized
               />
             )}
           </div>

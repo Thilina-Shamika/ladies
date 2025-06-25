@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WordPressHeader, WORDPRESS_API_URL } from '@/lib/wordpress';
 import AboutUsSubMenu from './AboutUsSubMenu';
 import LearningEnvironmentsSubMenu from './LearningEnvironmentsSubMenu';
+import SafeImage from '@/components/ui/SafeImage';
 
 interface HeaderProps {
   headerData: WordPressHeader | null;
@@ -195,11 +195,11 @@ export function Header({ headerData }: HeaderProps) {
             >
               <Link href="/" className="block">
                 {headerData?.acf.main_logo && (
-                  <Image
+                  <SafeImage
                     src={headerData.acf.main_logo.url}
                     alt={headerData.acf.main_logo.alt || 'Logo'}
-                    width={headerData.acf.main_logo.width}
-                    height={headerData.acf.main_logo.height}
+                    width={200}
+                    height={60}
                     className="h-12 w-auto"
                   />
                 )}

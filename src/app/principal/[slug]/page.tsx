@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { getPrincipal } from '@/lib/wordpress';
 import { notFound } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import SafeImage from '@/components/ui/SafeImage';
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false });
 
@@ -70,11 +70,10 @@ export default function PrincipalPage({ params }: { params: { slug: string } }) 
       <section className="relative min-h-[60vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover_image?.url && (
-            <Image
+            <SafeImage
               src={acf.cover_image.url}
               alt={acf.cover_image.alt || acf.heading}
-              className="object-cover object-top w-full h-full"
-              style={{ position: 'absolute', inset: 0 }}
+              className="object-cover object-top w-full h-full absolute inset-0"
               fill
               priority
             />
@@ -135,11 +134,11 @@ export default function PrincipalPage({ params }: { params: { slug: string } }) 
                       setIsOpen(true);
                     }}
                   >
-                    <Image
+                    <SafeImage
                       src={acf.past_principal_image.url}
                       alt={acf.past_principal_image.alt || acf.heading}
+                      className="object-cover rounded-lg cursor-pointer w-full h-full"
                       fill
-                      className="object-cover rounded-lg cursor-pointer"
                     />
                   </button>
                 </div>
@@ -179,11 +178,11 @@ export default function PrincipalPage({ params }: { params: { slug: string } }) 
                         setIsOpen(true);
                       }}
                     >
-                      <Image
+                      <SafeImage
                         src={item.principals_images.url}
                         alt={item.principals_images.alt || item.caption}
+                        className="object-cover rounded-lg cursor-pointer w-full h-full"
                         fill
-                        className="object-cover rounded-lg cursor-pointer"
                       />
                     </button>
                   </div>
@@ -228,11 +227,11 @@ export default function PrincipalPage({ params }: { params: { slug: string } }) 
                       setIsOpen(true);
                     }}
                   >
-                    <Image
+                    <SafeImage
                       src={image.url}
                       alt={image.alt || ''}
+                      className="object-cover rounded-lg cursor-pointer w-full h-full"
                       fill
-                      className="object-cover rounded-lg cursor-pointer"
                     />
                   </button>
                 </div>
