@@ -29,18 +29,23 @@ const SafeImage: React.FC<SafeImageProps> = ({
 }) => {
   const [useFallback, setUseFallback] = useState(false);
 
-  if (useFallback) {
+  // For external images (like WordPress), use regular img tag to avoid 402 errors
+  const isExternalImage = src.includes('kal.cse.mybluehost.me') || src.includes('ladies.local');
+
+  if (useFallback || isExternalImage) {
     return (
       <img
         src={src}
         alt={alt}
         className={className}
         style={style}
+        onError={() => setUseFallback(true)}
         {...props}
       />
     );
   }
 
+  // For local images, try Next.js Image optimization
   return (
     <Image
       src={src}

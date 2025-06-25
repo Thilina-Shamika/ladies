@@ -19,13 +19,45 @@ interface HistoryACF {
   };
 }
 
+// Helper function to extract year from term string
+function extractStartYear(term: string): number {
+  const match = term.match(/(\d{4})/);
+  return match ? parseInt(match[1]) : 9999;
+}
+
 export default async function HistoryPage() {
   const pageData = await getPage('history-of-ladies-college');
   const acf = (pageData?.acf || {}) as HistoryACF;
 
   // Fetch principals data
-  const principalsResponse = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/principal`);
-  const principals = await principalsResponse.json();
+  let principals = [];
+  try {
+    console.log('Fetching principals from:', `${WORDPRESS_API_URL}/wp-json/wp/v2/principal?per_page=100`);
+    
+    const principalsResponse = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/principal?per_page=100`);
+    
+    if (!principalsResponse.ok) {
+      console.error('Failed to fetch principals:', principalsResponse.status, principalsResponse.statusText);
+    } else {
+      const principalsData = await principalsResponse.json();
+      console.log('Raw principals data:', principalsData);
+      
+      principals = Array.isArray(principalsData) ? principalsData : [];
+      console.log('Principals array length:', principals.length);
+      
+      // Sort principals chronologically by their term start year
+      principals.sort((a, b) => {
+        const yearA = extractStartYear(a.acf?.term || '');
+        const yearB = extractStartYear(b.acf?.term || '');
+        return yearA - yearB;
+      });
+      
+      console.log('Sorted principals:', principals.map(p => ({ name: p.title.rendered, term: p.acf?.term })));
+    }
+  } catch (error) {
+    console.error('Error fetching principals:', error);
+    principals = [];
+  }
 
   return (
     <main className="pb-8">

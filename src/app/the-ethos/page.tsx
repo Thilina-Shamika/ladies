@@ -15,13 +15,38 @@ interface EthosACF {
   "1st_paragraph"?: string;
 }
 
+// Helper function to extract year from term string
+function extractStartYear(term: string): number {
+  const match = term.match(/(\d{4})/);
+  return match ? parseInt(match[1]) : 9999;
+}
+
 export default async function EthosPage() {
   const pageData = await getPage('the-ethos');
   const acf = (pageData?.acf || {}) as EthosACF;
 
-  // Fetch principals data
-  const principalsResponse = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/principal`);
-  const principals = await principalsResponse.json();
+  // Fetch principals data with chronological ordering
+  let principals = [];
+  try {
+    const principalsResponse = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/principal?per_page=100`);
+    
+    if (!principalsResponse.ok) {
+      console.error('Failed to fetch principals:', principalsResponse.status, principalsResponse.statusText);
+    } else {
+      const principalsData = await principalsResponse.json();
+      principals = Array.isArray(principalsData) ? principalsData : [];
+      
+      // Sort principals chronologically by their term start year
+      principals.sort((a, b) => {
+        const yearA = extractStartYear(a.acf?.term || '');
+        const yearB = extractStartYear(b.acf?.term || '');
+        return yearA - yearB;
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching principals:', error);
+    principals = [];
+  }
 
   return (
     <main className="pb-8">
