@@ -113,7 +113,7 @@ export default async function AdvanceLevelChoicesPage() {
                   rel="noopener noreferrer"
                   className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
                 >
-                  View AL Choices
+                  British A/L Options
                 </Link>
               )}
               {acf.local_ol_choices?.url && (
@@ -123,7 +123,7 @@ export default async function AdvanceLevelChoicesPage() {
                   rel="noopener noreferrer"
                   className="inline-block bg-[#9d0202] hover:bg-[#7a0101] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
                 >
-                  Local A/L Choices
+                  Local A/L Options
                 </Link>
               )}
             </div>

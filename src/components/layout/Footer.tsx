@@ -102,7 +102,7 @@ export default async function Footer() {
         {/* Copyright and Designed By */}
         <div className="border-t border-gray-200 mt-8 pt-6 pb-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
           <div>{acf.copyright}</div>
-          <div className="md:text-right">Designed & Developed by <span className="font-semibold"></span></div>
+          {/* <div className="md:text-right">Designed & Developed by Jerry<span className="font-semibold"></span></div> */}
         </div>
       </div>
     </footer>

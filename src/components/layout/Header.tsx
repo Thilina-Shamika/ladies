@@ -64,6 +64,11 @@ export function Header({ headerData }: HeaderProps) {
     (item) => item.main_menu_item_name.toLowerCase() !== 'home'
   );
 
+  // Find 125 years celebration link
+  const celebrationLink = headerData?.acf.top_bar_menu.find(
+    (item) => item.item_name.toLowerCase().includes('125 years')
+  );
+
   return (
     <>
       {/* Top Bar */}
@@ -71,12 +76,12 @@ export function Header({ headerData }: HeaderProps) {
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99] }}
-        className="bg-[#9d0101] text-white py-2 hidden md:block"
+        className="bg-[#9d0101] text-white py-2"
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            {/* Contact Info */}
-            <div className="flex items-center space-x-4">
+            {/* Contact Info - Hidden on mobile */}
+            <div className="hidden md:flex items-center space-x-4">
               {headerData?.acf.top_bar_phone && (
                 <a href={`tel:${headerData.acf.top_bar_phone}`} className="flex items-center space-x-1 hover:text-white/80">
                   <Phone className="w-4 h-4" />
@@ -91,10 +96,50 @@ export function Header({ headerData }: HeaderProps) {
               )}
             </div>
 
-            {/* Top Bar Menu & Social Links */}
-            <div className="flex items-center space-x-6">
+            {/* Mobile: Email, 125 Years Celebration Link & Social Media Icons */}
+            <div className="md:hidden flex items-center space-x-4">
+              {/* Email Address */}
+              {headerData?.acf.top_bar_email && (
+                <a href={`mailto:${headerData.acf.top_bar_email}`} className="flex items-center space-x-1 hover:text-white/80">
+                  <Mail className="w-3 h-3" />
+                  <span className="text-[12px]">{headerData.acf.top_bar_email}</span>
+                </a>
+              )}
+              
+              {/* 125 Years Celebration Link */}
+              {celebrationLink && (
+                <Link
+                  href="/125-years"
+                  className="text-[12px] hover:text-white/80 transition-colors"
+                  prefetch={false}
+                >
+                  {celebrationLink.item_name}
+                </Link>
+              )}
+              
+              {/* Social Media Icons */}
+              <div className="flex items-center space-x-2">
+                {headerData?.acf.social_media_icons.map((social, index) => {
+                  const Icon = socialIcons[social.social_media_name.toLowerCase()];
+                  return Icon ? (
+                    <a
+                      key={index}
+                      href={social.social_media_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white/80 transition-colors"
+                    >
+                      <Icon className="w-3 h-3" />
+                    </a>
+                  ) : null;
+                })}
+              </div>
+            </div>
+
+            {/* Desktop: Top Bar Menu & Social Links */}
+            <div className="hidden md:flex items-center space-x-6">
               {/* Top Bar Menu */}
-              <div className="hidden md:flex items-center space-x-4">
+              <div className="flex items-center space-x-4">
                 {headerData?.acf.top_bar_menu.map((item, index) => {
                   const url = item.item_link.url;
                   // Special handling for 125 years link
