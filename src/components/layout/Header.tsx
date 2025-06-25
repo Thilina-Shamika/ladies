@@ -96,17 +96,26 @@ export function Header({ headerData }: HeaderProps) {
               )}
             </div>
 
-            {/* Mobile: Email, 125 Years Celebration Link & Social Media Icons */}
-            <div className="md:hidden flex items-center space-x-4">
-              {/* Email Address */}
-              {headerData?.acf.top_bar_email && (
-                <a href={`mailto:${headerData.acf.top_bar_email}`} className="flex items-center space-x-1 hover:text-white/80">
-                  <Mail className="w-3 h-3" />
-                  <span className="text-[12px]">{headerData.acf.top_bar_email}</span>
-                </a>
-              )}
+            {/* Mobile: Phone/Email Icons, 125 Years Celebration Link & Social Media Icons */}
+            <div className="md:hidden flex items-center justify-between w-full">
+              {/* Left: Phone & Email Icons */}
+              <div className="flex items-center space-x-3">
+                {/* Phone Icon */}
+                {headerData?.acf.top_bar_phone && (
+                  <a href={`tel:${headerData.acf.top_bar_phone}`} className="hover:text-white/80 transition-colors">
+                    <Phone className="w-4 h-4" />
+                  </a>
+                )}
+                
+                {/* Email Icon */}
+                {headerData?.acf.top_bar_email && (
+                  <a href={`mailto:${headerData.acf.top_bar_email}`} className="hover:text-white/80 transition-colors">
+                    <Mail className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
               
-              {/* 125 Years Celebration Link */}
+              {/* Center: 125 Years Celebration Link */}
               {celebrationLink && (
                 <Link
                   href="/125-years"
@@ -117,7 +126,7 @@ export function Header({ headerData }: HeaderProps) {
                 </Link>
               )}
               
-              {/* Social Media Icons */}
+              {/* Right: Social Media Icons */}
               <div className="flex items-center space-x-2">
                 {headerData?.acf.social_media_icons.map((social, index) => {
                   const Icon = socialIcons[social.social_media_name.toLowerCase()];
@@ -129,7 +138,7 @@ export function Header({ headerData }: HeaderProps) {
                       rel="noopener noreferrer"
                       className="hover:text-white/80 transition-colors"
                     >
-                      <Icon className="w-3 h-3" />
+                      <Icon className="w-4 h-4" />
                     </a>
                   ) : null;
                 })}
