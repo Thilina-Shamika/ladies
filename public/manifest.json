@@ -1,0 +1,27 @@
+{
+  "name": "Ladies' College Colombo",
+  "short_name": "Ladies' College",
+  "description": "Premier girls' school in Sri Lanka offering excellence in education from kindergarten to advanced level",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9d0101",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["education", "school"],
+  "lang": "en",
+  "dir": "ltr"
+}

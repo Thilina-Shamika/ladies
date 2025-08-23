@@ -1,0 +1,50 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ladiescollege.lk/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/themes/
+Disallow: /wp-content/uploads/
+Disallow: /wp-json/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Allow important pages
+Allow: /about-us/
+Allow: /contact-us/
+Allow: /news/
+Allow: /events/
+Allow: /blog/
+Allow: /principal/
+Allow: /administration/
+Allow: /kindergarten/
+Allow: /primary-middle-school/
+Allow: /upper-school/
+Allow: /advance-level-choices/
+Allow: /special-education-unit/
+Allow: /sports-complex/
+Allow: /science-laboratory/
+Allow: /lilian-nixon-library/
+Allow: /mabel-simon-hall/
+Allow: /information-technology/
+Allow: /hostel-and-day-care/
+Allow: /career-guidance/
+Allow: /college-profile/
+Allow: /annual-reports/
+Allow: /archives/
+Allow: /resources/
+Allow: /school-hymn/
+Allow: /the-ethos/
+Allow: /vision-mission/
+Allow: /history-of-ladies-college/
+Allow: /125-years/
+Allow: /in-the-classroom/
+Allow: /learning-environments/
+Allow: /lcips/
