@@ -42,10 +42,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // Generate static page entries
-  const staticEntries = staticPages.map((page) => ({
+  const staticEntries: MetadataRoute.Sitemap = staticPages.map((page) => ({
     url: `${baseUrl}${page}`,
     lastModified: new Date(),
-    changeFrequency: page === '' ? 'daily' : 'weekly' as const,
+    changeFrequency: page === '' ? 'daily' : 'weekly',
     priority: page === '' ? 1 : 0.8,
   }))
 
@@ -60,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         blogEntries = posts.map((post: any) => ({
           url: `${baseUrl}/blog/${post.slug}`,
           lastModified: new Date(post.modified),
-          changeFrequency: 'monthly' as const,
+          changeFrequency: 'monthly',
           priority: 0.6,
         }))
       }
@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         eventEntries = events.map((event: any) => ({
           url: `${baseUrl}/events/${event.slug}`,
           lastModified: new Date(event.modified),
-          changeFrequency: 'weekly' as const,
+          changeFrequency: 'weekly',
           priority: 0.7,
         }))
       }
