@@ -83,11 +83,19 @@ export async function generateMetadata(): Promise<Metadata> {
       google: process.env.GOOGLE_SITE_VERIFICATION,
     },
     icons: {
-      icon: favicon?.url || '/favicon.ico',
-      shortcut: favicon?.url || '/favicon.ico',
+      icon: [
+        { url: favicon?.url || '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: favicon?.url || '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      ],
+      shortcut: favicon?.url || '/favicon-32x32.png',
       apple: favicon?.url || '/apple-touch-icon.png',
+      other: [
+        { rel: 'icon', url: favicon?.url || '/favicon.ico' },
+        { rel: 'icon', url: favicon?.url || '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+        { rel: 'icon', url: favicon?.url || '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+      ],
     },
-    manifest: '/manifest.json',
+    manifest: '/site.webmanifest',
   };
 }
 
@@ -113,6 +121,15 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body className={poppins.className}>
         {!isMaintenanceMode && <Header headerData={headerData} />}
         <main>
