@@ -1,12 +1,8 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
 import { getPrincipal } from '@/lib/wordpress';
 import { notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import SafeImage from '@/components/ui/SafeImage';
-
-const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false });
+import { Metadata } from 'next';
+import PrincipalPageClient from '@/components/principal/PrincipalPageClient';
 
 interface PrincipalImage {
   url: string;
@@ -35,222 +31,153 @@ interface PrincipalACF {
   gallery: PrincipalImage[];
 }
 
-export default function PrincipalPage({ params }: { params: { slug: string } }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [photoIndex, setPhotoIndex] = useState(0);
-  const [principal, setPrincipal] = useState<any>(null);
+interface PrincipalPageProps {
+  params: { slug: string };
+}
 
-  React.useEffect(() => {
-    const fetchPrincipal = async () => {
-      const data = await getPrincipal(params.slug);
-      if (!data) {
-        notFound();
-      }
-      setPrincipal(data);
-    };
-    fetchPrincipal();
-  }, [params.slug]);
-
+// Generate metadata for SEO
+export async function generateMetadata({ params }: PrincipalPageProps): Promise<Metadata> {
+  const principal = await getPrincipal(params.slug);
+  
   if (!principal) {
-    return null;
+    return {
+      title: 'Principal Not Found | Ladies College',
+      description: 'The requested principal information could not be found.',
+    };
   }
 
   const acf = principal.acf as PrincipalACF;
+  const principalName = acf.heading;
+  const term = acf.term;
+  const qualifications = acf.qualifications;
+  const country = acf.country;
+  
+  // Create a rich description
+  const description = `${principalName} served as Principal of Ladies College ${term}. ${qualifications} from ${country}. Learn about their leadership, achievements, and contributions to Ladies College.`;
 
-  // Prepare all images for lightbox
-  const allImages = [
-    ...(acf.past_principal_image ? [{ src: acf.past_principal_image.url, alt: acf.past_principal_image.alt || acf.heading }] : []),
-    ...(acf.images || []).map(img => ({ src: img.principals_images.url, alt: img.principals_images.alt || img.caption })),
-    ...(acf.gallery || []).map(img => ({ src: img.url, alt: img.alt || '' }))
-  ];
+  // Create keywords for better search visibility
+  const keywords = [
+    principalName,
+    'Ladies College Principal',
+    'Ladies College Colombo',
+    term,
+    qualifications,
+    country,
+    'Sri Lanka Education',
+    'School Leadership'
+  ].filter(Boolean).join(', ');
+
+  return {
+    title: `${principalName} - Principal of Ladies College ${term} | Ladies College`,
+    description,
+    keywords,
+    openGraph: {
+      title: `${principalName} - Principal of Ladies College ${term}`,
+      description,
+      type: 'article',
+      images: acf.cover_image?.url ? [
+        {
+          url: acf.cover_image.url,
+          alt: acf.cover_image.alt || `${principalName} - Ladies College Principal`,
+          width: 1200,
+          height: 630,
+        }
+      ] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${principalName} - Principal of Ladies College ${term}`,
+      description,
+      images: acf.cover_image?.url ? [acf.cover_image.url] : [],
+    },
+    alternates: {
+      canonical: `/principal/${params.slug}`,
+    },
+  };
+}
+
+// Generate structured data for better search engine understanding
+function generateStructuredData(principal: any, acf: PrincipalACF) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ladiescollege.lk';
+  
+  // Breadcrumb structured data
+  const breadcrumbData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Principal",
+        "item": `${baseUrl}/principal`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": acf.heading,
+        "item": `${baseUrl}/principal/${principal.slug}`
+      }
+    ]
+  };
+
+  // Person structured data
+  const personData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": acf.heading,
+    "jobTitle": "Principal",
+    "worksFor": {
+      "@type": "EducationalOrganization",
+      "name": "Ladies College",
+      "url": baseUrl,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Colombo",
+        "addressCountry": "LK"
+      }
+    },
+    "description": `${acf.heading} served as Principal of Ladies College ${acf.term}. ${acf.qualifications} from ${acf.country}.`,
+    "url": `${baseUrl}/principal/${principal.slug}`,
+    "image": acf.past_principal_image?.url || acf.cover_image?.url,
+    "sameAs": [],
+    "knowsAbout": ["Education", "School Leadership", "Academic Administration"],
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": acf.qualifications
+    }
+  };
+
+  return [breadcrumbData, personData];
+}
+
+export default async function PrincipalPage({ params }: PrincipalPageProps) {
+  const principal = await getPrincipal(params.slug);
+  
+  if (!principal) {
+    notFound();
+  }
+
+  const acf = principal.acf as PrincipalACF;
+  const structuredDataArray = generateStructuredData(principal, acf);
 
   return (
-    <main className="pb-8">
-      {/* Cover Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center bg-gray-900">
-        <div className="absolute inset-0 w-full h-full z-0">
-          {acf.cover_image?.url && (
-            <SafeImage
-              src={acf.cover_image.url}
-              alt={acf.cover_image.alt || acf.heading}
-              className="object-cover object-top w-full h-full absolute inset-0"
-              fill
-              priority
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
-        </div>
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-12 w-full">
-          <div className="text-white text-sm md:text-base font-semibold mb-4 tracking-widest uppercase drop-shadow">
-            {acf.sub_heading}
-          </div>
-          <div className="text-white text-lg md:text-xl mb-2">
-            {acf.term}
-          </div>
-          <h1 className="text-4xl md:text-7xl text-white mb-4 drop-shadow-lg font-light">
-            {acf.heading}
-          </h1>
-          <div className="text-white text-lg md:text-xl mb-2">
-            {acf.qualifications}
-          </div>
-          <div className="text-white text-lg md:text-xl">
-            Country: {acf.country}
-          </div>
-        </div>
-      </section>
-
-      {/* Content Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 max-w-4xl">
-          {/* Content Heading */}
-          {acf.content_heading && (
-            <div className="mb-16">
-              <h2 className="text-2xl md:text-3xl text-gray-900 font-light leading-tight">
-                {acf.content_heading}
-              </h2>
-            </div>
-          )}
-
-          {/* First Paragraph */}
-          {acf['1st_paragraph'] && (
-            <div className="mb-16">
-              <div
-                className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
-                dangerouslySetInnerHTML={{ __html: acf['1st_paragraph'] }}
-              />
-            </div>
-          )}
-
-          {/* Principal Image and Second Paragraph */}
-          <div className="flex flex-col md:flex-row gap-8 mb-16">
-            {acf.past_principal_image?.url && (
-              <div className="md:w-1/3">
-                <div className="relative aspect-[3/4] w-full min-h-[200px]">
-                  <button
-                    type="button"
-                    className="w-full h-full"
-                    onClick={() => {
-                      setPhotoIndex(0);
-                      setIsOpen(true);
-                    }}
-                  >
-                    <SafeImage
-                      src={acf.past_principal_image.url}
-                      alt={acf.past_principal_image.alt || acf.heading}
-                      className="object-cover rounded-lg cursor-pointer w-full h-full"
-                      fill
-                    />
-                  </button>
-                </div>
-              </div>
-            )}
-            {acf['2nd_paragraph'] && (
-              <div className="md:w-2/3">
-                <div
-                  className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
-                  dangerouslySetInnerHTML={{ __html: acf['2nd_paragraph'] }}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Block Quote */}
-          {acf.block_quote && (
-            <div className="mb-16">
-              <div
-                className="prose max-w-none text-gray-700 text-sm md:text-sm prose-h3:text-2xl prose-h3:font-light prose-h3:italic prose-h3:text-gray-900"
-                dangerouslySetInnerHTML={{ __html: acf.block_quote }}
-              />
-            </div>
-          )}
-
-          {/* Principal Images with Captions */}
-          {acf.images && acf.images.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-              {acf.images.map((item, index) => (
-                <div key={index} className="flex flex-col">
-                  <div className="relative aspect-[16/9] w-full min-h-[120px] mb-4">
-                    <button
-                      type="button"
-                      className="w-full h-full"
-                      onClick={() => {
-                        setPhotoIndex(index + (acf.past_principal_image ? 1 : 0));
-                        setIsOpen(true);
-                      }}
-                    >
-                      <SafeImage
-                        src={item.principals_images.url}
-                        alt={item.principals_images.alt || item.caption}
-                        className="object-cover rounded-lg cursor-pointer w-full h-full"
-                        fill
-                      />
-                    </button>
-                  </div>
-                  <div className="text-sm text-gray-600 italic">
-                    {item.caption}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Third Paragraph */}
-          {acf['3rd_paragraph'] && (
-            <div className="mb-16">
-              <div
-                className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
-                dangerouslySetInnerHTML={{ __html: acf['3rd_paragraph'] }}
-              />
-            </div>
-          )}
-
-          {/* Second Block Quote */}
-          {acf['2nd_block_quote'] && (
-            <div className="mb-16">
-              <div
-                className="prose max-w-none text-gray-700 text-sm md:text-sm prose-h3:text-2xl prose-h3:font-light prose-h3:italic prose-h3:text-gray-900"
-                dangerouslySetInnerHTML={{ __html: acf['2nd_block_quote'] }}
-              />
-            </div>
-          )}
-
-          {/* Gallery */}
-          {acf.gallery && acf.gallery.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {acf.gallery.map((image, index) => (
-                <div key={index} className="relative aspect-[16/9] w-full">
-                  <button
-                    type="button"
-                    className="w-full h-full"
-                    onClick={() => {
-                      setPhotoIndex(index + (acf.past_principal_image ? 1 : 0) + (acf.images?.length || 0));
-                      setIsOpen(true);
-                    }}
-                  >
-                    <SafeImage
-                      src={image.url}
-                      alt={image.alt || ''}
-                      className="object-cover rounded-lg cursor-pointer w-full h-full"
-                      fill
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Lightbox */}
-      {isOpen && (
-        <Lightbox
-          open={isOpen}
-          close={() => setIsOpen(false)}
-          slides={allImages}
-          index={photoIndex}
-          on={{ view: ({ index }) => setPhotoIndex(index) }}
+    <>
+      {/* Structured Data for SEO */}
+      {structuredDataArray.map((data, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
         />
-      )}
-    </main>
+      ))}
+      
+      <PrincipalPageClient principal={principal} acf={acf} />
+    </>
   );
 } 
