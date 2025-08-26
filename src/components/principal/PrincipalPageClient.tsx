@@ -4,6 +4,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import SafeImage from '@/components/ui/SafeImage';
 import DirectImage from '@/components/ui/DirectImage';
+import VercelBypassImage from '@/components/ui/VercelBypassImage';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false });
@@ -68,13 +69,13 @@ export default function PrincipalPageClient({ principal, acf }: PrincipalPageCli
       <section className="relative min-h-[60vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover_image?.url && (
-            <DirectImage
+            <VercelBypassImage
               src={acf.cover_image.url}
               alt={acf.cover_image.alt || acf.heading}
               className="object-cover object-top w-full h-full absolute inset-0"
               width="100%"
               height="100%"
-              loading="eager"
+              priority={true}
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
@@ -156,7 +157,7 @@ export default function PrincipalPageClient({ principal, acf }: PrincipalPageCli
                       setIsOpen(true);
                     }}
                   >
-                    <DirectImage
+                    <VercelBypassImage
                       src={acf.past_principal_image.url}
                       alt={acf.past_principal_image.alt || acf.heading}
                       className="object-cover rounded-lg cursor-pointer w-full h-full"

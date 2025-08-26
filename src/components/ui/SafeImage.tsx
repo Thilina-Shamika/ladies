@@ -34,7 +34,9 @@ const SafeImage: React.FC<SafeImageProps> = ({
   const isExternalImage = src.includes('kal.cse.mybluehost.me') || 
                          src.includes('ladies.local') || 
                          src.includes('http') ||
-                         src.startsWith('//');
+                         src.startsWith('//') ||
+                         src.includes('vercel.app') ||
+                         src.includes('vercel.com');
 
   // For external images, always use regular img tag to bypass Vercel optimization
   if (isExternalImage) {
