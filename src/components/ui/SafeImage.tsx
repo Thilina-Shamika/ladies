@@ -28,24 +28,49 @@ const SafeImage: React.FC<SafeImageProps> = ({
   ...props
 }) => {
   const [useFallback, setUseFallback] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-  // For external images (like WordPress), use regular img tag to avoid 402 errors
-  const isExternalImage = src.includes('kal.cse.mybluehost.me') || src.includes('ladies.local');
+  // Check if it's an external image (WordPress or other external sources)
+  const isExternalImage = src.includes('kal.cse.mybluehost.me') || 
+                         src.includes('ladies.local') || 
+                         src.includes('http') ||
+                         src.startsWith('//');
 
-  if (useFallback || isExternalImage) {
+  // For external images, always use regular img tag to bypass Vercel optimization
+  if (isExternalImage) {
     return (
       <img
         src={src}
         alt={alt}
         className={className}
         style={style}
-        onError={() => setUseFallback(true)}
+        onError={(e) => {
+          console.warn('Image failed to load:', src);
+          setImageError(true);
+        }}
+        onLoad={() => setImageError(false)}
         {...props}
       />
     );
   }
 
-  // For local images, try Next.js Image optimization
+  // For local images, try Next.js Image optimization first, then fallback
+  if (useFallback || imageError) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        style={style}
+        onError={(e) => {
+          console.warn('Fallback image also failed to load:', src);
+        }}
+        {...props}
+      />
+    );
+  }
+
+  // Try Next.js Image optimization for local images
   return (
     <Image
       src={src}
@@ -57,7 +82,11 @@ const SafeImage: React.FC<SafeImageProps> = ({
       priority={priority}
       sizes={sizes}
       style={style}
-      onError={() => setUseFallback(true)}
+      onError={() => {
+        console.warn('Next.js Image optimization failed, falling back to regular img:', src);
+        setUseFallback(true);
+      }}
+      unoptimized={isExternalImage} // Disable optimization for external images
       {...props}
     />
   );
