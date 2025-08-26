@@ -4,20 +4,28 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Bypass Vercel image optimization
-  if (pathname.includes('/_next/image') || pathname.includes('/api/og')) {
-    // Redirect to original image source
+  // Completely block Vercel image optimization
+  if (pathname.includes('/_next/image')) {
+    // Extract original URL from query parameters
     const url = new URL(request.url)
     const originalUrl = url.searchParams.get('url') || url.searchParams.get('src')
     
     if (originalUrl) {
+      // Redirect to the original image URL
       return NextResponse.redirect(originalUrl)
+    } else {
+      // If no original URL, return a 404 to prevent 402 errors
+      return new NextResponse('Image optimization disabled', { status: 404 })
     }
   }
 
-  // Handle image requests directly
+  // Block Open Graph image generation that might use optimization
+  if (pathname.includes('/api/og')) {
+    return new NextResponse('Open Graph generation disabled', { status: 404 })
+  }
+
+  // Handle direct image requests
   if (pathname.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
-    // Allow direct access to image files
     return NextResponse.next()
   }
 
@@ -35,4 +43,5 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
+} 
 } 

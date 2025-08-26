@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { getPage } from '@/lib/wordpress';
 
 interface AdminACF {
@@ -36,7 +36,7 @@ export default async function AdministrationPage() {
       {acf.cover?.url && (
         <section className="relative min-h-[40vh] flex items-center justify-center bg-gray-900">
           <div className="absolute inset-0 w-full h-full z-0">
-            <Image
+            <ForceNativeImage
               src={acf.cover.url}
               alt={acf.cover.alt || acf.heading || 'Administration'}
               className="object-cover object-center w-full h-full"
@@ -83,7 +83,7 @@ export default async function AdministrationPage() {
             <div className="flex flex-col items-center h-full">
               {acf.principals_image?.url && (
                 <div className="rounded-xl overflow-hidden shadow-xl mb-4" style={{ width: 320, height: 400 }}>
-                  <Image
+                  <ForceNativeImage
                     src={acf.principals_image.url}
                     alt={acf.principals_image.alt || acf.principals_name || 'Principal'}
                     width={320}
@@ -103,7 +103,7 @@ export default async function AdministrationPage() {
             <div className="flex flex-col items-center h-full">
               {acf.vice_principals_image?.url && (
                 <div className="rounded-xl overflow-hidden shadow-xl mb-4" style={{ width: 320, height: 400 }}>
-                  <Image
+                  <ForceNativeImage
                     src={acf.vice_principals_image.url}
                     alt={acf.vice_principals_image.alt || acf.vice_principals_name || 'Vice Principal'}
                     width={320}
@@ -134,7 +134,7 @@ export default async function AdministrationPage() {
                 <div key={idx} className="w-full h-full flex flex-col items-center bg-white rounded-xl shadow p-6">
                   {head.teacher_image?.url && (
                     <div className="w-full h-56 mb-4 rounded-lg overflow-hidden relative">
-                      <Image
+                      <ForceNativeImage
                         src={head.teacher_image.url}
                         alt={head.teacher_image.alt || head.teacher_name || 'Sectional Head'}
                         fill
@@ -156,7 +156,7 @@ export default async function AdministrationPage() {
           {acf.prefects_image?.url && (
             <div className="flex justify-center mb-8">
               <div className="rounded-xl overflow-hidden shadow-xl w-full max-w-2xl">
-                <Image
+                <ForceNativeImage
                   src={acf.prefects_image.url}
                   alt={acf.prefects_image.alt || 'Prefects'}
                   width={800}
