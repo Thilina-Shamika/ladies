@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Global Image Replacement System
  * Completely bypasses Vercel's image optimization
