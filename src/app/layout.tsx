@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ClientImageFix from "@/components/ui/ClientImageFix";
 import { getHeader, getFavicon } from "@/lib/wordpress";
 import "yet-another-react-lightbox/styles.css";
 
@@ -131,11 +132,13 @@ export default async function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body className={poppins.className}>
-        {!isMaintenanceMode && <Header headerData={headerData} />}
-        <main>
-          {children}
-        </main>
-        {!isMaintenanceMode && <Footer />}
+        <ClientImageFix>
+          {!isMaintenanceMode && <Header headerData={headerData} />}
+          <main>
+            {children}
+          </main>
+          {!isMaintenanceMode && <Footer />}
+        </ClientImageFix>
       </body>
     </html>
   );

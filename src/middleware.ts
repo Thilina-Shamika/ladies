@@ -1,29 +1,29 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Check if maintenance mode is enabled
-  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
-  
-  // Get the current path
-  const pathname = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl
 
-  // If maintenance mode is enabled and we're not on the maintenance page,
-  // redirect to the maintenance page
-  if (isMaintenanceMode && !pathname.startsWith('/maintenance')) {
-    return NextResponse.redirect(new URL('/maintenance', request.url));
+  // Bypass Vercel image optimization
+  if (pathname.includes('/_next/image') || pathname.includes('/api/og')) {
+    // Redirect to original image source
+    const url = new URL(request.url)
+    const originalUrl = url.searchParams.get('url') || url.searchParams.get('src')
+    
+    if (originalUrl) {
+      return NextResponse.redirect(originalUrl)
+    }
   }
 
-  // If maintenance mode is disabled and we're on the maintenance page,
-  // redirect to the home page
-  if (!isMaintenanceMode && pathname.startsWith('/maintenance')) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // Handle image requests directly
+  if (pathname.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+    // Allow direct access to image files
+    return NextResponse.next()
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
-// Configure which paths the middleware should run on
 export const config = {
   matcher: [
     /*
@@ -35,4 +35,4 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
-}; 
+} 
