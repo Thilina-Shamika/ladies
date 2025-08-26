@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import SafeImage from '@/components/ui/SafeImage';
 import DirectImage from '@/components/ui/DirectImage';
 import VercelBypassImage from '@/components/ui/VercelBypassImage';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false });
@@ -69,7 +70,7 @@ export default function PrincipalPageClient({ principal, acf }: PrincipalPageCli
       <section className="relative min-h-[60vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover_image?.url && (
-            <VercelBypassImage
+            <ForceNativeImage
               src={acf.cover_image.url}
               alt={acf.cover_image.alt || acf.heading}
               className="object-cover object-top w-full h-full absolute inset-0"
@@ -157,7 +158,7 @@ export default function PrincipalPageClient({ principal, acf }: PrincipalPageCli
                       setIsOpen(true);
                     }}
                   >
-                    <VercelBypassImage
+                    <ForceNativeImage
                       src={acf.past_principal_image.url}
                       alt={acf.past_principal_image.alt || acf.heading}
                       className="object-cover rounded-lg cursor-pointer w-full h-full"
@@ -202,11 +203,12 @@ export default function PrincipalPageClient({ principal, acf }: PrincipalPageCli
                         setIsOpen(true);
                       }}
                     >
-                      <SafeImage
+                      <ForceNativeImage
                         src={item.principals_images.url}
                         alt={item.principals_images.alt || item.caption}
                         className="object-cover rounded-lg cursor-pointer w-full h-full"
-                        fill
+                        width="100%"
+                        height="100%"
                       />
                     </button>
                   </div>
@@ -251,11 +253,12 @@ export default function PrincipalPageClient({ principal, acf }: PrincipalPageCli
                       setIsOpen(true);
                     }}
                   >
-                    <SafeImage
+                    <ForceNativeImage
                       src={image.url}
                       alt={image.alt || ''}
                       className="object-cover rounded-lg cursor-pointer w-full h-full"
-                      fill
+                      width="100%"
+                      height="100%"
                     />
                   </button>
                 </div>
