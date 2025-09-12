@@ -8,6 +8,7 @@ import Tiles from '@/components/home/Tiles';
 import Schooling from '@/components/home/Schooling';
 import News from '@/components/home/News';
 import StructuredData from '@/components/seo/StructuredData';
+import HomePopup from '@/components/ui/HomePopup';
 
 interface CurriculumItem {
   acf_fc_layout: string;
@@ -77,6 +78,7 @@ export default async function Home() {
         }} 
       />
       <main>
+        <HomePopup />
         {homePage?.acf.home_slider && (
           <HomeSlider slides={homePage.acf.home_slider} />
         )}
