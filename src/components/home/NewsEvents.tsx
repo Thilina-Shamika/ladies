@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { getPosts, getCategoriesByIds } from "@/lib/wordpress";
-import { WordPressPost } from "@/lib/utils";
+import { WordPressPost, decodeHtmlEntitiesSafe } from "@/lib/utils";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -75,7 +75,7 @@ export default function NewsEvents() {
         </div>
         <h3 className="text-lg text-black mb-2 leading-snug">
           <Link href={nextHref} className="hover:text-[#9d0202] transition-colors">
-            {post.title.rendered}
+            {decodeHtmlEntitiesSafe(post.title.rendered)}
           </Link>
         </h3>
         <div

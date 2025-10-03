@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { getPosts } from '@/lib/wordpress';
+import { decodeHtmlEntitiesSafe } from '@/lib/utils';
 
 interface Category {
   id: number;
@@ -77,7 +78,7 @@ const News: React.FC = () => {
                           </span>
                         ))}
                       </div>
-                      <h3 className="text-lg text-white font-semibold mb-0" dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
+                      <h3 className="text-lg text-white font-semibold mb-0">{decodeHtmlEntitiesSafe(post.title.rendered)}</h3>
                     </div>
                   </Link>
                 </div>

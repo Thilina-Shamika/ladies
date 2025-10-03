@@ -1,7 +1,7 @@
 'use client';
 import SafeImage from '@/components/ui/SafeImage';
 import { motion } from 'framer-motion';
-import { WordPressPost } from '@/lib/utils';
+import { WordPressPost, decodeHtmlEntitiesSafe } from '@/lib/utils';
 
 interface BlogPostClientProps {
   post: WordPressPost;
@@ -28,7 +28,7 @@ export function BlogPostClient({ post, featuredImage }: BlogPostClientProps) {
           </div>
         )}
 
-        <h1 className="text-3xl md:text-5xl text-black mb-6">{post.title.rendered}</h1>
+        <h1 className="text-3xl md:text-5xl text-black mb-6">{decodeHtmlEntitiesSafe(post.title.rendered)}</h1>
 
         <div
           className="prose text-black prose-lg max-w-none"
