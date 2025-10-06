@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import DirectImage from "@/components/ui/DirectImage";
+import ForceNativeImage from "@/components/ui/ForceNativeImage";
 import dynamic from "next/dynamic";
 
 const Lightbox = dynamic(() => import("yet-another-react-lightbox"), { ssr: false });
@@ -29,12 +29,12 @@ export default function UpperSchoolGallery({ gallery }: { gallery: GalleryImage[
             className="group relative w-full aspect-[4/3] overflow-hidden rounded-lg shadow hover:shadow-xl transition"
             onClick={() => { setPhotoIndex(idx); setIsOpen(true); }}
           >
-            <DirectImage
+            <ForceNativeImage
               src={img.url}
               alt={img.alt || ''}
               className="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300"
-              width="100%"
-              height="100%"
+              style={{ position: 'absolute', inset: 0 }}
+              fill
             />
           </button>
         ))}
