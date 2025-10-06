@@ -19,11 +19,27 @@ interface MabelSimonHallACF {
     alt: string;
     title?: string;
   }>;
+  notice_items?: Array<{
+    acf_fc_layout: string;
+    notice_heading?: string;
+    notice_description?: string;
+    notice_image?: {
+      url: string;
+      alt: string;
+    };
+    notice_button_text?: string;
+    notice_button_link?: {
+      title: string;
+      url: string;
+      target: string;
+    };
+  }>;
 }
 
 export default async function MabelSimonHallPage() {
   const pageData = await getPage('mabel-simon-hall');
   const acf = (pageData?.acf || {}) as MabelSimonHallACF;
+  
 
   return (
     <main className="pb-8">
@@ -93,13 +109,58 @@ export default async function MabelSimonHallPage() {
             </div>
           )}
 
+
+
           {/* Second Paragraph */}
           {acf["2nd_paragraph"] && (
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto mb-16">
               <div
                 className="prose max-w-none text-gray-700 text-sm md:text-sm prose-p:mb-8 prose-p:leading-relaxed [&_p]:mb-8"
                 dangerouslySetInnerHTML={{ __html: acf["2nd_paragraph"] }}
               />
+            </div>
+          )}
+
+          {/* Notices Section - At the very end */}
+          {acf.notice_items && acf.notice_items.length > 0 && (
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-2xl md:text-3xl text-[#9d0202] font-bold text-center mb-8">Notices</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {acf.notice_items.map((notice, idx) => (
+                  <div key={idx} className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                    {notice.notice_heading && (
+                      <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                        {notice.notice_heading}
+                      </h4>
+                    )}
+                    {notice.notice_description && (
+                      <div 
+                        className="text-gray-700 text-sm mb-4 prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: notice.notice_description }}
+                      />
+                    )}
+                    {notice.notice_image?.url && (
+                      <div className="mb-4">
+                        <ForceNativeImage
+                          src={notice.notice_image.url}
+                          alt={notice.notice_image.alt || notice.notice_heading || 'Notice image'}
+                          className="w-full h-auto rounded"
+                        />
+                      </div>
+                    )}
+                    {notice.notice_button_text && notice.notice_button_link?.url && (
+                      <a
+                        href={notice.notice_button_link.url}
+                        target={notice.notice_button_link.target || '_blank'}
+                        rel={notice.notice_button_link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                        className="inline-block bg-[#9d0202] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#7a0101] transition-colors"
+                      >
+                        {notice.notice_button_text}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
