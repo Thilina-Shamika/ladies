@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { getPage } from '@/lib/wordpress';
 import EventsCalendarAndList from '@/components/events/EventsCalendarAndList';
 
@@ -16,6 +16,21 @@ interface YearsACF {
   };
   paragraph?: string;
   anthem?: string;
+  "125_years_notices"?: Array<{
+    acf_fc_layout: string;
+    notices_heading?: string;
+    notices_description?: string;
+    notices_image?: {
+      url: string;
+      alt: string;
+    };
+    notices_button_text?: string;
+    notices_button_link?: {
+      title: string;
+      url: string;
+      target: string;
+    };
+  }>;
 }
 
 export default async function YearsPage() {
@@ -37,7 +52,7 @@ export default async function YearsPage() {
       <section className="relative min-h-[40vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover?.url && (
-            <Image
+            <ForceNativeImage
               src={acf.cover.url}
               alt={acf.cover.alt || acf.heading || '125 Years'}
               className="object-cover object-center w-full h-full"
@@ -65,7 +80,7 @@ export default async function YearsPage() {
           {acf.years_logo?.url && (
             <div className="max-w-4xl mx-auto mb-16">
               <div className="flex justify-center">
-                <Image
+                <ForceNativeImage
                   src={acf.years_logo.url}
                   alt={acf.years_logo.alt || '125 Years Logo'}
                   width={500}
@@ -94,7 +109,7 @@ export default async function YearsPage() {
 
           {/* Anthem Video */}
           {videoId && (
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto mb-16">
               <h2 className="text-2xl md:text-3xl text-[#9d0202] text-center mb-8">125 Years Anthem</h2>
               <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden shadow-xl">
                 <iframe
@@ -104,6 +119,49 @@ export default async function YearsPage() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
+              </div>
+            </div>
+          )}
+
+          {/* Notices Section - At the very end */}
+          {acf["125_years_notices"] && acf["125_years_notices"].length > 0 && (
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-2xl md:text-3xl text-[#9d0202] font-bold text-center mb-8">Notices</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {acf["125_years_notices"].map((notice, idx) => (
+                  <div key={idx} className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                    {notice.notices_heading && (
+                      <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                        {notice.notices_heading}
+                      </h4>
+                    )}
+                    {notice.notices_description && (
+                      <div 
+                        className="text-gray-700 text-sm mb-4 prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: notice.notices_description }}
+                      />
+                    )}
+                    {notice.notices_image?.url && (
+                      <div className="mb-4">
+                        <ForceNativeImage
+                          src={notice.notices_image.url}
+                          alt={notice.notices_image.alt || notice.notices_heading || 'Notice image'}
+                          className="w-full h-auto rounded"
+                        />
+                      </div>
+                    )}
+                    {notice.notices_button_text && notice.notices_button_link?.url && (
+                      <a
+                        href={notice.notices_button_link.url}
+                        target={notice.notices_button_link.target || '_blank'}
+                        rel={notice.notices_button_link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                        className="inline-block bg-[#9d0202] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#7a0101] transition-colors"
+                      >
+                        {notice.notices_button_text}
+                      </a>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
