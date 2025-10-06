@@ -1,5 +1,5 @@
 import React from 'react';
-import SafeImage from '@/components/ui/SafeImage';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { getPage } from '@/lib/wordpress';
 import UpperSchoolGallery from '@/components/upper-school/UpperSchoolGallery';
 
@@ -31,7 +31,7 @@ export default async function MabelSimonHallPage() {
       <section className="relative min-h-[50vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover?.url && (
-            <SafeImage
+            <ForceNativeImage
               src={acf.cover.url}
               alt={acf.cover.alt || acf.heading || 'Mabel Simon Hall'}
               className="object-cover object-center w-full h-full"
