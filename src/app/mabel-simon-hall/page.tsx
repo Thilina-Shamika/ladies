@@ -35,7 +35,8 @@ export default async function MabelSimonHallPage() {
               src={acf.cover.url}
               alt={acf.cover.alt || acf.heading || 'Mabel Simon Hall'}
               className="object-cover object-center w-full h-full"
-              style={{ position: 'absolute', inset: 0 }}
+              width="100%"
+              height="100%"
               loading="eager"
             />
           )}

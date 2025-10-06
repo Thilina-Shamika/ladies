@@ -33,7 +33,8 @@ export default function UpperSchoolGallery({ gallery }: { gallery: GalleryImage[
               src={img.url}
               alt={img.alt || ''}
               className="object-cover object-center w-full h-full group-hover:scale-105 transition-transform duration-300"
-              style={{ position: 'absolute', inset: 0 }}
+              width="100%"
+              height="100%"
             />
           </button>
         ))}
