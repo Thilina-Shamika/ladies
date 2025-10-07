@@ -1,4 +1,5 @@
 import React from 'react';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { notFound } from 'next/navigation';
 
 interface EventData {
@@ -35,11 +36,12 @@ export default async function EventPage({ params }: { params: { slug: string } }
       <h1 className="text-3xl md:text-5xl mb-6 text-[#9d0202]">{acf.event_name}</h1>
       {acf.event_image?.url && (
         <div className="mb-8 w-full rounded-xl overflow-hidden shadow-lg bg-white flex items-center justify-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <ForceNativeImage
             src={acf.event_image.url}
             alt={acf.event_image.alt || acf.event_name}
-            className="w-full max-h-[600px] object-contain object-center"
+            className="w-full object-contain object-center"
+            style={{ maxHeight: 600 }}
+            loading="eager"
           />
         </div>
       )}
