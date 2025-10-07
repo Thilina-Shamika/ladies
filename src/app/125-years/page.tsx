@@ -1,7 +1,7 @@
 import React from 'react';
 import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { getPage } from '@/lib/wordpress';
-import EventsCalendarAndList from '@/components/events/EventsCalendarAndList';
+ 
 
 interface YearsACF {
   subheading?: string;
@@ -101,11 +101,7 @@ export default async function YearsPage() {
             </div>
           )}
 
-          {/* Events Section */}
-          <div className="max-w-7xl mx-auto mb-16">
-            <h2 className="text-2xl md:text-3xl text-[#9d0202] font-bold text-center mb-8">Upcoming Events</h2>
-            <EventsCalendarAndList />
-          </div>
+          
 
           {/* Anthem Video */}
           {videoId && (
@@ -123,10 +119,10 @@ export default async function YearsPage() {
             </div>
           )}
 
-          {/* Notices Section - At the very end */}
+          {/* Celebrations Section - At the very end */}
           {acf["125_years_notices"] && acf["125_years_notices"].length > 0 && (
             <div className="max-w-4xl mx-auto">
-              <h3 className="text-2xl md:text-3xl text-[#9d0202] font-bold text-center mb-8">Notices</h3>
+              <h3 className="text-2xl md:text-3xl text-[#9d0202] font-bold text-center mb-8">Celebrations</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {acf["125_years_notices"].map((notice, idx) => (
                   <div key={idx} className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
