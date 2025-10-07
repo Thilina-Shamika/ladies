@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import dynamic from 'next/dynamic';
 import 'react-calendar/dist/Calendar.css';
 import Link from 'next/link';
-import Image from 'next/image';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { format } from "date-fns";
 
 // Dynamically import Calendar with no SSR
@@ -162,9 +162,10 @@ export default function EventsCalendarAndList() {
               >
                 {event.acf.event_image?.url ? (
                   <div className="w-24 md:w-40 h-24 md:h-32 relative rounded-lg overflow-hidden flex-shrink-0">
-                    <Image
+                    <ForceNativeImage
                       src={event.acf.event_image.url}
                       alt={event.acf.event_name}
+                      style={{ position: 'absolute', inset: 0 }}
                       fill
                       className="object-cover object-center"
                     />
@@ -257,7 +258,7 @@ export default function EventsCalendarAndList() {
                   >
                     <div className="flex gap-3">
                       {event.acf.event_image?.url ? (
-                        <Image
+                        <ForceNativeImage
                           src={event.acf.event_image.url}
                           alt={event.acf.event_name}
                           width={64}

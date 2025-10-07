@@ -1,6 +1,6 @@
 import React from 'react';
 import EventsCalendarAndList from '@/components/events/EventsCalendarAndList';
-import Image from 'next/image';
+import ForceNativeImage from '@/components/ui/ForceNativeImage';
 import { getPage } from '@/lib/wordpress';
 
 interface EventsACF {
@@ -21,13 +21,13 @@ export default async function EventsPage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.events_cover?.url && (
-            <Image
+            <ForceNativeImage
               src={acf.events_cover.url}
               alt={acf.events_heading || 'Events'}
               className="object-cover object-center w-full h-full"
               style={{ position: 'absolute', inset: 0 }}
-              width={1920}
-              height={1080}
+              fill
+              priority
             />
           )}
           <div className="absolute inset-0 bg-black/60" />
