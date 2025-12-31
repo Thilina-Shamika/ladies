@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 interface TileItem {
@@ -42,7 +41,7 @@ const Tiles: React.FC<TilesProps> = ({ items }) => {
                 style={{ minHeight: 180 }}
               >
                 <div className="mb-4">
-                  <Image
+                  <img
                     src={item.tile_image.url}
                     alt={item.tile_image.alt || item.tile_heading}
                     width={60}
@@ -64,7 +63,7 @@ const Tiles: React.FC<TilesProps> = ({ items }) => {
               style={{ minHeight: 180 }}
             >
               <div className="mb-4">
-                <Image
+                <img
                   src={item.tile_image.url}
                   alt={item.tile_image.alt || item.tile_heading}
                   width={60}

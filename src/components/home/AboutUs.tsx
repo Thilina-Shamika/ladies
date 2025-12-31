@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { motion } from 'framer-motion';
 import Link from "next/link";
 
@@ -109,27 +108,21 @@ const AboutUs: React.FC<AboutUsProps> = ({
           </div>
           {/* Right: Images */}
           <div className="w-full flex flex-col md:flex-row gap-4 justify-center md:justify-end items-center">
-            <div className="rounded-xl overflow-hidden shadow-xl max-w-[350px] w-full aspect-[4/5] flex-shrink-0">
-              <Image
+            <div className="rounded-xl overflow-hidden shadow-xl max-w-[350px] w-full aspect-[4/5] flex-shrink-0 relative">
+              <img
                 src={imageUrl}
                 alt={imageAlt}
-                width={350}
-                height={438}
                 className="object-cover object-center w-full h-full"
-                sizes="(max-width: 768px) 90vw, 350px"
-                priority
+                loading="eager"
               />
             </div>
             {image2Url && (
-              <div className="rounded-xl overflow-hidden shadow-xl max-w-[350px] w-full aspect-[4/5] flex-shrink-0">
-                <Image
+              <div className="rounded-xl overflow-hidden shadow-xl max-w-[350px] w-full aspect-[4/5] flex-shrink-0 relative">
+                <img
                   src={image2Url}
                   alt={image2Alt || 'About image 2'}
-                  width={350}
-                  height={438}
                   className="object-cover object-center w-full h-full"
-                  sizes="(max-width: 768px) 90vw, 350px"
-                  priority
+                  loading="eager"
                 />
               </div>
             )}

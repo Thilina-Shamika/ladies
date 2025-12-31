@@ -1,6 +1,5 @@
 "use client";
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -44,15 +43,11 @@ const History: React.FC<HistoryProps> = ({
         <div className="w-full flex justify-center md:justify-start items-center relative min-h-[360px]">
           {imageUrl ? (
             <div className="rounded-xl overflow-hidden shadow-2xl max-w-[420px] w-full aspect-[16/9] flex-shrink-0 relative z-10">
-              <Image
+              <img
                 src={imageUrl}
                 alt={imageAlt}
-                width={420}
-                height={236}
                 className="object-cover object-center w-full h-full"
-                sizes="(max-width: 768px) 90vw, 420px"
-                quality={90}
-                priority
+                loading="eager"
               />
             </div>
           ) : (
@@ -68,15 +63,11 @@ const History: React.FC<HistoryProps> = ({
                 boxShadow: '0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10)',
               }}
             >
-              <Image
+              <img
                 src={image2Url}
                 alt={image2Alt}
-                width={300}
-                height={170}
                 className="object-cover object-center w-full h-full"
-                sizes="300px"
-                quality={90}
-                priority
+                loading="eager"
               />
             </div>
           )}

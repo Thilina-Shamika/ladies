@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from "next/link";
 
@@ -45,12 +44,10 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <Image
+              <img
                 src={image.url}
                 alt={image.alt || name}
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover object-center w-full h-full absolute inset-0"
               />
               <motion.div 
                 className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent px-6 py-4 z-10"

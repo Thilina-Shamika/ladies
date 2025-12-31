@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -106,12 +105,11 @@ const Schooling: React.FC<SchoolingProps> = ({
                     custom={idx}
                   >
                     <div className="absolute inset-0 w-full h-full">
-                      <Image
+                      <img
                         src={item.curriculum_image.url}
                         alt={item.curriculum_image.alt || item.curriculum_heading}
-                        fill
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
-                        priority={idx === 0}
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-300 w-full h-full"
+                        loading={idx === 0 ? "eager" : "lazy"}
                       />
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />
@@ -171,12 +169,11 @@ const Schooling: React.FC<SchoolingProps> = ({
                     custom={idx}
                   >
                     <div className="absolute inset-0 w-full h-full">
-                      <Image
+                      <img
                         src={item.curriculum_image.url}
                         alt={item.curriculum_image.alt || item.curriculum_heading}
-                        fill
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
-                        priority={idx === 0}
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-300 w-full h-full"
+                        loading={idx === 0 ? "eager" : "lazy"}
                       />
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black" />

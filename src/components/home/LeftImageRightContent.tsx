@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 interface LeftImageRightContentProps {
@@ -28,14 +27,11 @@ export const LeftImageRightContent: React.FC<LeftImageRightContentProps> = ({
         <div className="w-full flex justify-center md:justify-start items-center">
           {imageUrl && (
             <div className="rounded-xl overflow-hidden shadow-xl w-full aspect-[4/3] flex-shrink-0 relative">
-              <Image
+              <img
                 src={imageUrl}
                 alt={imageAlt}
-                fill
-                className="object-cover object-center w-full h-full"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                quality={90}
-                priority
+                className="object-cover object-center w-full h-full absolute inset-0"
+                loading="eager"
               />
             </div>
           )}
