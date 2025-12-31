@@ -14,7 +14,6 @@ interface PrincipalMessageProps {
   message: string;
   buttonText?: string;
   buttonLink?: { url: string; target?: string; };
-  anniversaryImage?: { url: string; alt: string; };
 }
 
 export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
@@ -26,40 +25,21 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
   message,
   buttonText,
   buttonLink,
-  anniversaryImage,
 }) => {
   return (
     <section className="bg-white py-16">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left: Principal Image with overlay and Anniversary Image */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+          {/* Left: Principal Image with overlay - 4 columns */}
           <motion.div 
-            className="flex flex-col md:flex-row gap-6 items-center relative"
+            className="md:col-span-4"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {anniversaryImage && (
-              <motion.div 
-                className="relative w-full aspect-[3/4] sm:max-w-[300px] md:max-w-[200px] rounded-xl overflow-hidden shadow-xl z-20 md:-mr-16 bg-white"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Image
-                  src={anniversaryImage.url}
-                  alt={anniversaryImage.alt || "125 Years Anniversary"}
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 100vw, 200px"
-                  priority
-                />
-              </motion.div>
-            )}
             <motion.div 
-              className="relative w-full aspect-[3/4] max-w-md rounded-xl overflow-hidden shadow-xl"
+              className="relative w-full aspect-[3/4] rounded-xl overflow-hidden shadow-xl"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -70,7 +50,7 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
                 alt={image.alt || name}
                 fill
                 className="object-cover object-center"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
               <motion.div 
                 className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent px-6 py-4 z-10"
@@ -84,9 +64,9 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
               </motion.div>
             </motion.div>
           </motion.div>
-          {/* Right: Subheading, Heading, Message, Button */}
+          {/* Right: Subheading, Heading, Message, Button - 8 columns */}
           <motion.div 
-            className="flex flex-col items-start"
+            className="md:col-span-8 flex flex-col items-start"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
