@@ -79,7 +79,7 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
               <span className="text-xs uppercase tracking-widest text-[#9d0202] font-semibold">{subheading}</span>
             </motion.div>
             <motion.h2 
-              className="text-3xl md:text-6xl text-gray-900 mb-6 leading-14"
+              className="text-2xl md:text-4xl text-gray-900 mb-6 leading-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

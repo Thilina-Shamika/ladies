@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { getPage } from '@/lib/wordpress';
 
 interface PrincipalsMessageACF {
@@ -31,13 +30,10 @@ export default async function PrincipalsMessagePage() {
       <section className="relative min-h-[35vh] flex items-center justify-center bg-gray-900">
         <div className="absolute inset-0 w-full h-full z-0">
           {acf.cover_image?.url && (
-            <Image
+            <img
               src={acf.cover_image.url}
               alt={acf.cover_image.alt || acf.heading || 'Principal\'s Message'}
-              className="object-cover object-center w-full h-full"
-              style={{ position: 'absolute', inset: 0 }}
-              fill
-              priority
+              className="object-cover object-center w-full h-full absolute inset-0"
             />
           )}
           <div className="absolute inset-0 bg-black/60" />
@@ -56,22 +52,20 @@ export default async function PrincipalsMessagePage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           {/* Two Columns Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             {/* Left Column: Principal's Image */}
             <div className="relative">
               {acf.principals_image?.url && (
                 <div className="rounded-xl overflow-hidden shadow-xl">
-                  <Image
+                  <img
                     src={acf.principals_image.url}
                     alt={acf.principals_image.alt || acf.principals_name || 'Principal'}
-                    width={800}
-                    height={533}
                     className="w-full h-auto"
                   />
                 </div>
               )}
             </div>
-            {/* Right Column: Content */}
+            {/* Right Column: All Content */}
             <div>
               {acf.content_heading && (
                 <h2 className="text-2xl md:text-3xl text-gray-900 mb-8">
@@ -80,56 +74,56 @@ export default async function PrincipalsMessagePage() {
               )}
               {acf["1st_paragraph"] && (
                 <div 
-                  className="wysiwyg-content"
+                  className="wysiwyg-content mb-8"
                   dangerouslySetInnerHTML={{ __html: acf["1st_paragraph"] }}
                 />
               )}
+              
+              {/* Second Paragraph */}
+              {acf["2nd_paragraph"] && (
+                <div className="mb-8">
+                  <div 
+                    className="wysiwyg-content"
+                    dangerouslySetInnerHTML={{ __html: acf["2nd_paragraph"] }}
+                  />
+                </div>
+              )}
+
+              {/* Block Quote */}
+              {acf.block_quote && (
+                <div className="mb-8">
+                  <div className="relative pl-8 border-l-4 border-[#9d0202] bg-gray-50/50 p-8 rounded-r-lg">
+                    <div 
+                      className="wysiwyg-content"
+                      dangerouslySetInnerHTML={{ __html: acf.block_quote }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Third Paragraph */}
+              {acf["3rd_paragraph"] && (
+                <div className="mb-8">
+                  <div 
+                    className="wysiwyg-content"
+                    dangerouslySetInnerHTML={{ __html: acf["3rd_paragraph"] }}
+                  />
+                </div>
+              )}
+
+              {/* Principal's Name and Title */}
+              {acf.principals_name && (
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    {acf.principals_name}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Ladies College Principal
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Second Paragraph */}
-          {acf["2nd_paragraph"] && (
-            <div className="max-w-4xl mx-auto mb-16">
-              <div 
-                className="wysiwyg-content"
-                dangerouslySetInnerHTML={{ __html: acf["2nd_paragraph"] }}
-              />
-            </div>
-          )}
-
-          {/* Block Quote */}
-          {acf.block_quote && (
-            <div className="max-w-4xl mx-auto mb-16">
-              <div className="relative pl-8 border-l-4 border-[#9d0202] bg-gray-50/50 p-8 rounded-r-lg">
-                <div 
-                  className="wysiwyg-content"
-                  dangerouslySetInnerHTML={{ __html: acf.block_quote }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Third Paragraph */}
-          {acf["3rd_paragraph"] && (
-            <div className="max-w-4xl mx-auto mb-16">
-              <div 
-                className="wysiwyg-content"
-                dangerouslySetInnerHTML={{ __html: acf["3rd_paragraph"] }}
-              />
-            </div>
-          )}
-
-          {/* Principal's Name and Title */}
-          {acf.principals_name && (
-            <div className="max-w-4xl mx-auto text-center">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {acf.principals_name}
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Ladies College Principal
-              </p>
-            </div>
-          )}
         </div>
       </section>
     </main>
