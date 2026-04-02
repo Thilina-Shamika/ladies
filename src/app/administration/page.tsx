@@ -14,6 +14,8 @@ interface AdminACF {
   principals_name?: string;
   vice_principals_image?: WPMediaField;
   vice_principals_name?: string;
+  vice_principals_image_2?: WPMediaField;
+  vice_principals_name_2?: string;
   second_vice_principals_image?: WPMediaField;
   second_vice_principals_name?: string;
   "1st_paragraph"?: string;
@@ -77,10 +79,12 @@ export default async function AdministrationPage() {
   const acf = (pageData?.acf || {}) as AdminACF;
   const acfAny = pageData?.acf as Record<string, unknown> | undefined;
   const secondVpImage =
+    acf.vice_principals_image_2 ??
     acf.second_vice_principals_image ??
     (acfAny?.['2nd_vice_principals_image'] as WPMediaField | undefined) ??
     (acfAny?.vice_principals_2_image as WPMediaField | undefined);
   const secondVpName =
+    acf.vice_principals_name_2 ??
     acf.second_vice_principals_name ??
     (acfAny?.['2nd_vice_principals_name'] as string | undefined) ??
     (acfAny?.vice_principals_2_name as string | undefined);
