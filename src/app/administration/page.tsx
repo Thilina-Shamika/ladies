@@ -136,26 +136,34 @@ export default async function AdministrationPage() {
             )}
           </div>
 
-          {/* Principal & Vice Principals */}
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 items-start mb-16">
-            <LeadershipColumn
-              image={acf.principals_image}
-              name={acf.principals_name}
-              roleLabel="The Principal"
-              fallbackAlt="Principal"
-            />
-            <LeadershipColumn
-              image={acf.vice_principals_image}
-              name={acf.vice_principals_name}
-              roleLabel="The Vice Principal"
-              fallbackAlt="Vice Principal"
-            />
-            <LeadershipColumn
-              image={secondVpImage}
-              name={secondVpName}
-              roleLabel="The Vice Principal"
-              fallbackAlt="Vice Principal"
-            />
+          {/* Principal centered; Vice Principals in a row below, centered */}
+          <div className="max-w-6xl mx-auto mb-16 flex flex-col items-center gap-10 md:gap-12">
+            <div className="flex justify-center w-full">
+              <LeadershipColumn
+                image={acf.principals_image}
+                name={acf.principals_name}
+                roleLabel="The Principal"
+                fallbackAlt="Principal"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 w-full max-w-4xl mx-auto">
+              <div className="flex justify-center">
+                <LeadershipColumn
+                  image={acf.vice_principals_image}
+                  name={acf.vice_principals_name}
+                  roleLabel="Vice Principal"
+                  fallbackAlt="Vice Principal"
+                />
+              </div>
+              <div className="flex justify-center">
+                <LeadershipColumn
+                  image={secondVpImage}
+                  name={secondVpName}
+                  roleLabel="Acting Vice Principal"
+                  fallbackAlt="Acting Vice Principal"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Sectional Heads */}
