@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import ClientImageFix from "@/components/ui/ClientImageFix";
 import GlobalImageFix from "@/components/ui/GlobalImageFix";
 import { getHeader, getFavicon } from "@/lib/wordpress";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "yet-another-react-lightbox/styles.css";
 
 const poppins = Poppins({ 
@@ -141,6 +142,7 @@ export default async function RootLayout({
           </main>
           {!isMaintenanceMode && <Footer />}
         </ClientImageFix>
+        <SpeedInsights />
       </body>
     </html>
   );
