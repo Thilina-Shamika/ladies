@@ -21,19 +21,27 @@ interface EventItem {
   slug: string;
   title: string;
   acf: {
-    event_name: string;
-    event_start_date: string;
-    event_start_time: string;
-    event_end_date: string;
-    event_end_time: string;
-    event_location: string;
-    event_description: string;
+    event_name?: string | null;
+    event_start_date?: string | null;
+    event_start_time?: string | null;
+    event_end_date?: string | null;
+    event_end_time?: string | null;
+    event_location?: string | null;
+    event_description?: string | null;
     event_image?: { url: string };
     event_link?: { url: string; title: string };
   };
 }
 
-function parseEventDate(date: string) {
+function safeText(value: string | null | undefined) {
+  return typeof value === "string" ? value : "";
+}
+
+function getEventName(event: EventItem) {
+  return safeText(event.acf.event_name).trim() || "Untitled Event";
+}
+
+function parseEventDate(date?: string | null) {
   if (!date) return undefined;
   const [d, m, y] = date.split('/');
   if (!d || !m || !y) return undefined;
@@ -59,7 +67,7 @@ export default function EventsCalendarAndList() {
       setLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/wp-json/wp/v2/event?acf_format=standard&per_page=100`);
       const data = await res.json();
-      setEvents(data);
+      setEvents(Array.isArray(data) ? data : []);
       setLoading(false);
     }
     fetchEvents();
@@ -79,9 +87,10 @@ export default function EventsCalendarAndList() {
   // Only filter the list below by search and date
   const filteredEvents = useMemo(() => {
     const today = new Date();
+    const normalizedSearch = search.toLowerCase();
     return events
       .filter((event) => {
-        const nameMatch = event.acf.event_name.toLowerCase().includes(search.toLowerCase());
+        const nameMatch = safeText(event.acf.event_name).toLowerCase().includes(normalizedSearch);
         let dateMatch = true;
         if (dateFilter) {
           const eventDate = parseEventDate(event.acf.event_start_date);
@@ -164,7 +173,7 @@ export default function EventsCalendarAndList() {
                   <div className="w-24 md:w-40 h-24 md:h-32 relative rounded-lg overflow-hidden flex-shrink-0">
                     <ForceNativeImage
                       src={event.acf.event_image.url}
-                      alt={event.acf.event_name}
+                      alt={getEventName(event)}
                       style={{ position: 'absolute', inset: 0 }}
                       fill
                       className="object-cover object-center"
@@ -175,16 +184,16 @@ export default function EventsCalendarAndList() {
                 )}
                 <div className="flex-1 flex flex-col gap-2 items-start text-left">
                   <div className="flex flex-wrap gap-4 text-xs text-gray-700 items-center">
-                    <span>📅 {event.acf.event_start_date} {event.acf.event_start_time && `| ${event.acf.event_start_time}`}</span>
+                    <span>📅 {safeText(event.acf.event_start_date)} {event.acf.event_start_time && `| ${event.acf.event_start_time}`}</span>
                     {event.acf.event_end_date && (
                       <span> - {event.acf.event_end_date} {event.acf.event_end_time && `| ${event.acf.event_end_time}`}</span>
                     )}
                     {event.acf.event_location && <span>📍 {event.acf.event_location}</span>}
                   </div>
                   <div className="font-semibold text-lg md:text-xl text-gray-900">
-                    {event.acf.event_name}
+                    {getEventName(event)}
                   </div>
-                  <div className="text-gray-700 text-sm line-clamp-2" dangerouslySetInnerHTML={{ __html: event.acf.event_description }} />
+                  <div className="text-gray-700 text-sm line-clamp-2" dangerouslySetInnerHTML={{ __html: safeText(event.acf.event_description) }} />
                 </div>
                 <div className="flex flex-col items-end gap-2 min-w-[100px] md:min-w-[120px]">
                   {event.acf.event_link?.url && (
@@ -236,7 +245,7 @@ export default function EventsCalendarAndList() {
                     href={`/events/${event.slug}`}
                     className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition cursor-pointer no-underline"
                   >
-                    <div className="font-semibold text-gray-900">{event.acf.event_name}</div>
+                    <div className="font-semibold text-gray-900">{getEventName(event)}</div>
                     <div className="text-sm text-gray-700">
                       {event.acf.event_start_time && `${event.acf.event_start_time}`}
                       {event.acf.event_location && <span className="block mt-1">📍 {event.acf.event_location}</span>}
@@ -260,7 +269,7 @@ export default function EventsCalendarAndList() {
                       {event.acf.event_image?.url ? (
                         <ForceNativeImage
                           src={event.acf.event_image.url}
-                          alt={event.acf.event_name}
+                          alt={getEventName(event)}
                           width={64}
                           height={64}
                           className="w-16 h-16 object-cover rounded-lg"
@@ -271,9 +280,9 @@ export default function EventsCalendarAndList() {
                         </div>
                       )}
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-900 line-clamp-1">{event.acf.event_name}</div>
+                        <div className="font-semibold text-gray-900 line-clamp-1">{getEventName(event)}</div>
                         <div className="text-sm text-gray-700">
-                          <div>{event.acf.event_start_date}</div>
+                          <div>{safeText(event.acf.event_start_date)}</div>
                           {event.acf.event_location && (
                             <div className="text-xs mt-1">📍 {event.acf.event_location}</div>
                           )}
