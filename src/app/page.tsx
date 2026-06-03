@@ -20,22 +20,13 @@ interface CurriculumItem {
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ladiescollege.lk';
-  
+  const ogImage = `${siteUrl}/og-image.jpg`;
+
   return {
     title: "Ladies' College Colombo - Premier Girls' School in Sri Lanka",
     description: "Ladies' College Colombo is one of Sri Lanka's premier girls' schools, established in 1900. Offering excellence in education from kindergarten to advanced level with modern facilities, dedicated teachers, and a rich heritage.",
-    keywords: [
-      "Ladies' College Colombo",
-      "girls' school Sri Lanka",
-      "private school Colombo",
-      "premier girls' education",
-      "Sri Lanka girls' school",
-      "Colombo private school",
-      "kindergarten to advanced level",
-      "excellence in education",
-      "HAEC VICTORIA NOSTRA FIDES",
-      "1900 established school"
-    ],
+    keywords:
+      "Ladies' College Colombo, girls' school Sri Lanka, private school Colombo, premier girls' education, Sri Lanka girls' school, Colombo private school, kindergarten to advanced level, excellence in education, HAEC VICTORIA NOSTRA FIDES, 1900 established school",
     alternates: {
       canonical: '/',
     },
@@ -44,14 +35,12 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Ladies' College Colombo is one of Sri Lanka's premier girls' schools, established in 1900. Offering excellence in education from kindergarten to advanced level.",
       url: siteUrl,
       siteName: "Ladies' College Colombo",
-      images: [
-        {
-          url: `${siteUrl}/og-image.jpg`,
-          width: 1200,
-          height: 630,
-          alt: "Ladies' College Colombo - Premier Girls' School",
-        },
-      ],
+      images: {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Ladies' College Colombo - Premier Girls' School",
+      },
       locale: 'en_US',
       type: 'website',
     },
@@ -59,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: "Ladies' College Colombo - Premier Girls' School in Sri Lanka",
       description: "Ladies' College Colombo is one of Sri Lanka's premier girls' schools, established in 1900. Offering excellence in education from kindergarten to advanced level.",
-      images: [`${siteUrl}/og-image.jpg`],
+      images: ogImage,
     },
   };
 }

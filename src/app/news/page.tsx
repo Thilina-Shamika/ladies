@@ -1,7 +1,9 @@
 import React from 'react';
 import SafeImage from '@/components/ui/SafeImage';
 import Blog from '@/components/home/Blog';
-import { getPage } from '@/lib/wordpress';
+import { getAllCategories, getNewsPosts, getPage } from '@/lib/wordpress';
+
+export const revalidate = 3600;
 
 interface NewsACF {
   news_image?: {
@@ -13,7 +15,11 @@ interface NewsACF {
 }
 
 export default async function NewsPage() {
-  const data = await getPage('news');
+  const [data, posts, categories] = await Promise.all([
+    getPage('news', { embed: false }),
+    getNewsPosts(),
+    getAllCategories(),
+  ]);
   const acf = (data?.acf || {}) as NewsACF;
   return (
     <>
@@ -41,7 +47,7 @@ export default async function NewsPage() {
           </h1>
         </div>
       </section>
-      <Blog />
+      <Blog initialPosts={posts} initialCategories={categories} />
     </>
   );
 } 

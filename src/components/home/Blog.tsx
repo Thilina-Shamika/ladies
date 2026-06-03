@@ -1,54 +1,23 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import SafeImage from "@/components/ui/SafeImage";
+import type { WordPressPost } from "@/lib/utils";
+import type { WordPressCategory } from "@/lib/wordpress";
 
-const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
-interface Post {
-  id: number;
-  title: { rendered: string };
-  excerpt: { rendered: string };
-  date: string;
-  slug: string;
-  categories?: number[];
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{
-      source_url: string;
-      alt_text?: string;
-    }>;
-  };
+interface BlogProps {
+  initialPosts: WordPressPost[];
+  initialCategories: WordPressCategory[];
 }
 
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  count: number;
-}
-
-export default function Blog() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+export default function Blog({ initialPosts, initialCategories }: BlogProps) {
+  const [posts] = useState<WordPressPost[]>(initialPosts);
+  const [categories] = useState<WordPressCategory[]>(initialCategories);
   const [search, setSearch] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<WordPressPost[]>(initialPosts);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sort, setSort] = useState<string>("date-desc");
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&per_page=50`);
-      const data = await res.json();
-      setPosts(data);
-      setFilteredPosts(data);
-      // Fetch categories
-      const catRes = await fetch(`${WORDPRESS_API_URL}/wp-json/wp/v2/categories?per_page=50&_fields=id,name,slug,count`);
-      setCategories(await catRes.json());
-      // Fetch recent posts
-      setRecentPosts(data.slice(0, 5));
-    }
-    fetchData();
-  }, []);
+  const recentPosts = useMemo(() => posts.slice(0, 5), [posts]);
 
   useEffect(() => {
     let filtered = posts;

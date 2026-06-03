@@ -21,8 +21,6 @@ const AboutUsSubMenu: React.FC<AboutUsSubMenuProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  console.log('AboutUsSubMenu items:', items);
-
   // Close submenu on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

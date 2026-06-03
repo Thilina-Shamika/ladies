@@ -1,7 +1,42 @@
 import { WordPressPost, WordPressPage } from './utils';
 import { WP_API_URL } from '@/config/constants';
 
-export const WORDPRESS_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || WP_API_URL;
+function normalizeWordPressApiUrl(url: string) {
+  return url.replace(/\/+$/, '');
+}
+
+export const WORDPRESS_API_URL = normalizeWordPressApiUrl(
+  process.env.NEXT_PUBLIC_WORDPRESS_API_URL || WP_API_URL
+);
+
+/** Build a WordPress REST URL without double slashes. */
+export function wpApiUrl(path: string) {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${WORDPRESS_API_URL}${normalizedPath}`;
+}
+
+const WP_FETCH_TIMEOUT_MS = 30_000;
+
+export async function wpFetch(
+  path: string,
+  init?: RequestInit & { next?: { revalidate?: number } }
+) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), WP_FETCH_TIMEOUT_MS);
+
+  try {
+    return await fetch(wpApiUrl(path), {
+      ...init,
+      signal: controller.signal,
+      headers: {
+        Accept: 'application/json',
+        ...init?.headers,
+      },
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 interface MenuLink {
   title: string;
@@ -147,20 +182,15 @@ export async function getNonce(): Promise<string> {
 
 export async function getPosts(page = 1, perPage = 10): Promise<WordPressPost[]> {
   try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&page=${page}&per_page=${perPage}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        next: { revalidate: 3600 },
-      }
+    const response = await wpFetch(
+      `/wp-json/wp/v2/posts?_embed=wp:featuredmedia&page=${page}&per_page=${perPage}`,
+      { next: { revalidate: 3600 } }
     );
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch posts');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -168,22 +198,61 @@ export async function getPosts(page = 1, perPage = 10): Promise<WordPressPost[]>
   }
 }
 
+/** Posts for the news page — featured media only, not full embed. */
+export async function getNewsPosts(perPage = 50): Promise<WordPressPost[]> {
+  try {
+    const response = await wpFetch(
+      `/wp-json/wp/v2/posts?_embed=wp:featuredmedia&per_page=${perPage}&orderby=date&order=desc`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch news posts');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching news posts:', error);
+    return [];
+  }
+}
+
+export type WordPressCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+};
+
+export async function getAllCategories(): Promise<WordPressCategory[]> {
+  try {
+    const response = await wpFetch(
+      '/wp-json/wp/v2/categories?per_page=100&_fields=id,name,slug,count&orderby=count&order=desc',
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch categories');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+}
+
 export async function getPost(slug: string): Promise<WordPressPost | null> {
   try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp-json/wp/v2/posts?_embed&slug=${slug}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        next: { revalidate: 3600 },
-      }
+    const response = await wpFetch(
+      `/wp-json/wp/v2/posts?slug=${slug}&_fields=id,date,slug,title,content,excerpt`,
+      { next: { revalidate: 3600 } }
     );
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch post');
     }
-    
+
     const posts = await response.json();
     return posts[0] || null;
   } catch (error) {
@@ -215,28 +284,24 @@ export async function getPages(): Promise<WordPressPage[]> {
   }
 }
 
-export async function getPage(slug: string) {
+export async function getPage(slug: string, options?: { embed?: boolean }) {
   try {
     if (!WORDPRESS_API_URL) {
       console.error('WordPress API URL is not configured');
       return null;
     }
 
-    const apiUrl = `${WORDPRESS_API_URL}/wp-json/wp/v2/pages?slug=${slug}&_embed`;
-    console.log('Fetching page data from:', apiUrl);
-
-    const response = await fetch(apiUrl, {
-      next: { revalidate: 3600 },
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
+    const embedQuery = options?.embed === false ? '' : '&_embed';
+    const response = await wpFetch(
+      `/wp-json/wp/v2/pages?slug=${slug}${embedQuery}`,
+      { next: { revalidate: 3600 } }
+    );
 
     if (!response.ok) {
       console.error(`Failed to fetch page data for ${slug}:`, {
         status: response.status,
         statusText: response.statusText,
-        url: apiUrl
+        url: wpApiUrl(`/wp-json/wp/v2/pages?slug=${slug}${embedQuery}`),
       });
       return null;
     }
@@ -400,10 +465,18 @@ export async function getPrincipal(slug: string) {
   }
 }
 
-export async function getFavicon() {
+export type WordPressFavicon = {
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  mime_type?: string;
+};
+
+export async function getFavicon(): Promise<WordPressFavicon | null> {
   try {
-    const response = await fetch(
-      `${WORDPRESS_API_URL}/wp-json/wp/v2/add-logofavicon?slug=favicon`,
+    const response = await wpFetch(
+      '/wp-json/wp/v2/favicon?slug=favicon&acf_format=standard',
       { next: { revalidate: 3600 } }
     );
 
@@ -412,11 +485,22 @@ export async function getFavicon() {
     }
 
     const data = await response.json();
-    if (!data || data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
       return null;
     }
 
-    return data[0].acf.ladiescollege_favicon;
+    const faviconField = data[0]?.acf?.favicon;
+    if (!faviconField || typeof faviconField !== 'object' || !faviconField.url) {
+      return null;
+    }
+
+    return {
+      url: faviconField.url,
+      alt: faviconField.alt || 'Ladies\' College',
+      width: faviconField.width,
+      height: faviconField.height,
+      mime_type: faviconField.mime_type,
+    };
   } catch (error) {
     console.error('Error fetching favicon:', error);
     return null;
