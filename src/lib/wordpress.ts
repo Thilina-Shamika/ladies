@@ -442,10 +442,6 @@ export type PageModule =
         name?: string;
         role?: string;
       }>;
-    }
-  | {
-      acf_fc_layout: string;
-      [key: string]: unknown;
     };
 
 export async function getModularPage(slug: string): Promise<ModularPage | null> {
