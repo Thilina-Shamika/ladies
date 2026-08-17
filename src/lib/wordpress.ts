@@ -324,6 +324,151 @@ export async function getPage(slug: string, options?: { embed?: boolean }) {
   }
 }
 
+/** Slugs that already have dedicated Next.js routes. The modular catch-all must not handle these. */
+export const RESERVED_PAGE_SLUGS = new Set([
+  'about-us',
+  'administration',
+  'advance-level-choices',
+  'annual-reports',
+  'archives',
+  'blog',
+  'career-guidance',
+  'college-profile',
+  'contact-us',
+  'events',
+  'history-of-ladies-college',
+  'hostel-and-day-care',
+  'in-the-classroom',
+  'information-technology',
+  'introduction',
+  'kindergarten',
+  'lcips',
+  'learning-environments',
+  'lilian-nixon-library',
+  'mabel-simon-hall',
+  'maintenance',
+  'news',
+  'nursery',
+  'primary-middle-school',
+  'principal',
+  'principals-message',
+  'privacy-policy',
+  'resources',
+  'school-hymn',
+  'science-laboratory',
+  'special-education-unit',
+  'sports-complex',
+  'terms-conditions',
+  'the-ethos',
+  'upper-school',
+  '125-years',
+]);
+
+export type ModularPage = {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  excerpt?: { rendered: string };
+  template?: string;
+  acf?: {
+    page_modules?: PageModule[] | false;
+  };
+};
+
+export type WPMediaField = { url: string; alt?: string; title?: string } | false | null | undefined;
+
+export type WPLinkField = {
+  title?: string;
+  url?: string;
+  target?: string;
+} | false | null | undefined;
+
+export type WPFileField = {
+  url?: string;
+  title?: string;
+  filename?: string;
+} | false | null | undefined;
+
+export type PageModule =
+  | {
+      acf_fc_layout: 'hero';
+      sub_heading?: string;
+      heading?: string;
+      cover?: WPMediaField;
+    }
+  | {
+      acf_fc_layout: 'text_block';
+      content_subheading?: string;
+      content_heading?: string;
+      content?: string;
+    }
+  | {
+      acf_fc_layout: 'two_column_intro';
+      content_heading?: string;
+      content_subheading?: string;
+      content?: string;
+    }
+  | {
+      acf_fc_layout: 'quote';
+      quote?: string;
+    }
+  | {
+      acf_fc_layout: 'image_text';
+      image?: WPMediaField;
+      image_position?: 'left' | 'right' | string;
+      subheading?: string;
+      heading?: string;
+      content?: string;
+      button?: WPLinkField;
+    }
+  | {
+      acf_fc_layout: 'gallery';
+      gallery?: Array<{ url: string; alt?: string; title?: string }>;
+    }
+  | {
+      acf_fc_layout: 'downloads';
+      heading?: string;
+      files?: Array<{
+        title?: string;
+        file?: WPFileField;
+      }>;
+    }
+  | {
+      acf_fc_layout: 'people_grid';
+      heading?: string;
+      intro?: string;
+      people?: Array<{
+        image?: WPMediaField;
+        name?: string;
+        role?: string;
+      }>;
+    }
+  | {
+      acf_fc_layout: string;
+      [key: string]: unknown;
+    };
+
+export async function getModularPage(slug: string): Promise<ModularPage | null> {
+  try {
+    if (!WORDPRESS_API_URL) return null;
+
+    const response = await wpFetch(
+      `/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&acf_format=standard`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!response.ok) return null;
+
+    const pages = await response.json();
+    if (!Array.isArray(pages) || pages.length === 0) return null;
+
+    return pages[0] as ModularPage;
+  } catch (error) {
+    console.error(`Error fetching modular page ${slug}:`, error);
+    return null;
+  }
+}
+
 export interface Slide {
   acf_fc_layout: string;
   slide_subheading: string;
