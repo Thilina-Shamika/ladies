@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Facebook, Instagram, Youtube, Linkedin } from 'lucide-react';
 import SafeImage from '@/components/ui/SafeImage';
+import { normalizeFrontendHref } from '@/lib/utils';
 
 const socialIcons = {
   facebook: Facebook,
@@ -87,9 +88,7 @@ export default async function Footer() {
             <div className="font-semibold mb-2 text-[#9d0101]">Resources</div>
             <div className="grid grid-cols-2 gap-x-4">
               {acf.resources?.map((item: any, idx: number) => {
-                // Convert full URL to path for Next.js routing
-                let href = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
-                if (!href.startsWith('/')) href = '/' + href;
+                const href = normalizeFrontendHref(item.page_link.url);
                 return (
                   <Link key={idx} href={href} className="text-gray-700 text-sm mb-1 hover:underline">
                     {item.page_name}

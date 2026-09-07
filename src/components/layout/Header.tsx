@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Menu, X, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube, LucideIcon, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WordPressHeader, WORDPRESS_API_URL } from '@/lib/wordpress';
+import { isExternalHref, normalizeFrontendHref } from '@/lib/utils';
 import AboutUsSubMenu from './AboutUsSubMenu';
 import LearningEnvironmentsSubMenu from './LearningEnvironmentsSubMenu';
 import SafeImage from '@/components/ui/SafeImage';
@@ -151,6 +152,7 @@ export function Header({ headerData }: HeaderProps) {
               <div className="flex items-center space-x-4">
                 {headerData?.acf.top_bar_menu.map((item, index) => {
                   const url = item.item_link.url;
+                  const nextHref = normalizeFrontendHref(url);
                   // Special handling for 125 years link
                   if (item.item_name.toLowerCase().includes('125 years')) {
                     return (
@@ -166,11 +168,10 @@ export function Header({ headerData }: HeaderProps) {
                   }
                   // Special handling for Parents Resources link
                   if (item.item_name.toLowerCase().includes('parents resources')) {
-                    const nextjsUrl = url.replace('https://kal.cse.mybluehost.me', '');
                     return (
                       <Link
                         key={index}
-                        href={nextjsUrl}
+                        href={nextHref}
                         className="text-[12px] hover:text-white/80 transition-colors"
                         prefetch={false}
                       >
@@ -179,14 +180,14 @@ export function Header({ headerData }: HeaderProps) {
                     );
                   }
                   // Handle external URLs and special protocols
-                  if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+                  if (isExternalHref(url) || nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                     return (
                       <a
                         key={index}
-                        href={url}
+                        href={nextHref}
                         className="text-[12px] hover:text-white/80 transition-colors"
-                        target={url.startsWith('http') ? '_blank' : undefined}
-                        rel={url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        target={isExternalHref(url) ? '_blank' : undefined}
+                        rel={isExternalHref(url) ? 'noopener noreferrer' : undefined}
                       >
                         {item.item_name}
                       </a>
@@ -196,7 +197,7 @@ export function Header({ headerData }: HeaderProps) {
                   return (
                     <Link
                       key={index}
-                      href={url.replace(/^https?:\/\/[^/]+/, '')}
+                      href={nextHref}
                       className="text-[12px] hover:text-white/80 transition-colors"
                       prefetch={false}
                     >
@@ -270,7 +271,7 @@ export function Header({ headerData }: HeaderProps) {
               {/* Home menu item */}
               {homeMenuItem && (
                 <Link
-                  href={homeMenuItem.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '')}
+                  href={normalizeFrontendHref(homeMenuItem.main_menu_item_link.url)}
                   className="text-[#000000] text-sm uppercase hover:text-primary transition-colors"
                   prefetch={false}
                 >
@@ -283,13 +284,15 @@ export function Header({ headerData }: HeaderProps) {
               <LearningEnvironmentsSubMenu items={learningSubMenu} />
               {/* Other menu items */}
               {otherMenuItems.map((item, index) => {
-                const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
-                if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                const nextHref = normalizeFrontendHref(item.main_menu_item_link.url);
+                if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:') || isExternalHref(item.main_menu_item_link.url)) {
                   return (
                     <a
                       key={index}
                       href={nextHref}
                       className="text-[#000000] text-sm uppercase hover:text-primary transition-colors"
+                      target={isExternalHref(item.main_menu_item_link.url) ? '_blank' : undefined}
+                      rel={isExternalHref(item.main_menu_item_link.url) ? 'noopener noreferrer' : undefined}
                     >
                       {item.main_menu_item_name}
                     </a>
@@ -357,7 +360,7 @@ export function Header({ headerData }: HeaderProps) {
                   {/* Home menu item */}
                   {homeMenuItem && (
                     <Link
-                      href={homeMenuItem.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '')}
+                      href={normalizeFrontendHref(homeMenuItem.main_menu_item_link.url)}
                       className="block py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                       prefetch={false}
@@ -378,7 +381,7 @@ export function Header({ headerData }: HeaderProps) {
                         <ChevronDown className={`ml-2 w-4 h-4 transition-transform ${aboutOpen ? 'rotate-180' : ''} text-white`} />
                       </button>
                       {aboutOpen && aboutSubMenu.map((item, idx) => {
-                        const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+                        const nextHref = normalizeFrontendHref(item.page_link.url);
                         return (
                           <Link
                             key={idx}
@@ -405,7 +408,7 @@ export function Header({ headerData }: HeaderProps) {
                         <ChevronDown className={`ml-2 w-4 h-4 transition-transform ${learningOpen ? 'rotate-180' : ''} text-white`} />
                       </button>
                       {learningOpen && learningSubMenu.map((item, idx) => {
-                        const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+                        const nextHref = normalizeFrontendHref(item.page_link.url);
                         return (
                           <Link
                             key={idx}
@@ -422,14 +425,16 @@ export function Header({ headerData }: HeaderProps) {
 
                   {/* Other main menu items */}
                   {otherMenuItems.map((item, index) => {
-                    const nextHref = item.main_menu_item_link.url.replace(/^https?:\/\/[^/]+/, '');
-                    if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
+                    const nextHref = normalizeFrontendHref(item.main_menu_item_link.url);
+                    if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:') || isExternalHref(item.main_menu_item_link.url)) {
                       return (
                         <a
                           key={index}
                           href={nextHref}
                           className="block py-2 text-white text-sm uppercase hover:text-white/80 transition-colors"
                           onClick={() => setIsMenuOpen(false)}
+                          target={isExternalHref(item.main_menu_item_link.url) ? '_blank' : undefined}
+                          rel={isExternalHref(item.main_menu_item_link.url) ? 'noopener noreferrer' : undefined}
                         >
                           {item.main_menu_item_name}
                         </a>

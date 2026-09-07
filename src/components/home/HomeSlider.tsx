@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Slide } from '@/lib/wordpress';
 import Link from "next/link";
+import { normalizeFrontendHref } from '@/lib/utils';
 
 interface HomeSliderProps {
   slides: Slide[];
@@ -97,7 +98,7 @@ export function HomeSlider({ slides }: HomeSliderProps) {
                 )}
                 {slides[currentSlide].slide_button_text && slides[currentSlide].slide_button_link?.url && (
                   (() => {
-                    const nextHref = typeof slides[currentSlide].slide_button_link.url === 'string' ? slides[currentSlide].slide_button_link.url.replace(/^https?:\/\/[^/]+/, '') : '/';
+                    const nextHref = normalizeFrontendHref(slides[currentSlide].slide_button_link.url);
                     if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                       return (
                         <motion.a

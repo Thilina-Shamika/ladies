@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from 'framer-motion';
 import Link from "next/link";
+import { normalizeFrontendHref } from "@/lib/utils";
 
 interface AboutUsProps {
   subheading?: string;
@@ -84,7 +85,7 @@ const AboutUs: React.FC<AboutUsProps> = ({
             />
             {buttonText && buttonLink && (
               (() => {
-                const nextHref = buttonLink.replace(/^https?:\/\/[^/]+/, '');
+                const nextHref = normalizeFrontendHref(buttonLink);
                 if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                   return (
                     <a

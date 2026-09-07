@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { normalizeFrontendHref } from '@/lib/utils';
 
 interface SubMenuItem {
   acf_fc_layout: string;
@@ -55,7 +56,7 @@ const AboutUsSubMenu: React.FC<AboutUsSubMenuProps> = ({ items }) => {
           className="absolute top-full left-0 mt-2 w-64 bg-[#9d0101] shadow-lg rounded-lg py-2 z-50"
         >
           {items.map((item, index) => {
-            const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+            const nextHref = normalizeFrontendHref(item.page_link.url);
             return (
               <Link
                 key={index}

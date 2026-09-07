@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { normalizeFrontendHref } from '@/lib/utils';
 
 interface SubMenuItem {
   acf_fc_layout: string;
@@ -53,7 +54,7 @@ export default function LearningEnvironmentsSubMenu({ items }: LearningEnvironme
           >
             <div className="grid grid-cols-2 gap-x-2">
               {items.map((item, index) => {
-                const nextHref = item.page_link.url.replace(/^https?:\/\/[^/]+/, '');
+                const nextHref = normalizeFrontendHref(item.page_link.url);
                 return (
                   <Link
                     key={index}

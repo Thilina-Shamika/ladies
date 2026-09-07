@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from "next/link";
+import { normalizeFrontendHref } from '@/lib/utils';
 
 interface PrincipalMessageProps {
   image: { url: string; alt: string; };
@@ -97,7 +98,7 @@ export const PrincipalMessage: React.FC<PrincipalMessageProps> = ({
             />
             {buttonText && buttonLink?.url && (
               (() => {
-                const nextHref = typeof buttonLink.url === 'string' ? buttonLink.url.replace(/^https?:\/\/[^/]+/, '') : '/';
+                const nextHref = normalizeFrontendHref(buttonLink.url);
                 if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
                   return (
                     <motion.a

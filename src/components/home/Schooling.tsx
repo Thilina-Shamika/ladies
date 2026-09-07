@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 import Link from "next/link";
+import { normalizeFrontendHref } from "@/lib/utils";
 
 interface CurriculumItem {
   acf_fc_layout: string;
@@ -86,8 +87,7 @@ const Schooling: React.FC<SchoolingProps> = ({
         >
           {items.map((item, idx) => {
             const linkUrl = item.curriculum_link?.url || '#';
-            // Convert WordPress absolute URLs to relative paths for Next.js Link
-            const nextHref = typeof linkUrl === 'string' ? linkUrl.replace(/^https?:\/\/[^/]+/, '') : '#';
+            const nextHref = normalizeFrontendHref(linkUrl);
             if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) return null;
             return (
               <SwiperSlide key={idx}>
@@ -152,7 +152,7 @@ const Schooling: React.FC<SchoolingProps> = ({
         >
           {items.map((item, idx) => {
             const linkUrl = item.curriculum_link?.url || '#';
-            const nextHref = typeof linkUrl === 'string' ? linkUrl.replace(/^https?:\/\/[^/]+/, '') : '#';
+            const nextHref = normalizeFrontendHref(linkUrl);
             return (
               <SwiperSlide key={idx}>
                 <Link

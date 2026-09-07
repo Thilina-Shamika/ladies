@@ -48,6 +48,51 @@ export function decodeHtmlEntitiesSafe(text: string): string {
   return decoded;
 }
 
+const KNOWN_INTERNAL_HOSTS = new Set(
+  [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.NEXT_PUBLIC_WORDPRESS_API_URL,
+    'https://ladiescollege.lk',
+    'https://www.ladiescollege.lk',
+    'https://kal.cse.mybluehost.me',
+    'http://ladies.local',
+  ]
+    .filter(Boolean)
+    .map((value) => {
+      try {
+        return new URL(value as string).host;
+      } catch {
+        return null;
+      }
+    })
+    .filter((value): value is string => Boolean(value))
+);
+
+export function normalizeFrontendHref(url?: string | null): string {
+  if (!url) return '/';
+  if (url.startsWith('mailto:') || url.startsWith('tel:') || url.startsWith('#')) {
+    return url;
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (!KNOWN_INTERNAL_HOSTS.has(parsed.host)) {
+      return url;
+    }
+
+    const pathname = parsed.pathname || '/';
+    const normalizedPath = pathname === '/' ? '/' : pathname.replace(/\/+$/, '') || '/';
+    return `${normalizedPath}${parsed.search}${parsed.hash}`;
+  } catch {
+    return url.startsWith('/') ? url : `/${url}`;
+  }
+}
+
+export function isExternalHref(url?: string | null): boolean {
+  const normalized = normalizeFrontendHref(url);
+  return /^https?:\/\//.test(normalized);
+}
+
 export type WordPressPost = {
   id: number;
   date: string;

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { normalizeFrontendHref } from "@/lib/utils";
 
 interface TileItem {
   tile_image: { url: string; alt: string };
@@ -28,8 +29,7 @@ const Tiles: React.FC<TilesProps> = ({ items }) => {
         className={`grid ${gridCols} gap-0 bg-[#9d0202] rounded-lg overflow-hidden border border-white`}
       >
         {items.map((item, idx) => {
-          // Convert WordPress absolute URLs to relative paths for Next.js Link
-          const nextHref = typeof item.tile_link.url === 'string' ? item.tile_link.url.replace(/^https?:\/\/[^/]+/, '') : '#';
+          const nextHref = normalizeFrontendHref(item.tile_link.url);
           if (nextHref.startsWith('mailto:') || nextHref.startsWith('tel:')) {
             return (
               <a
